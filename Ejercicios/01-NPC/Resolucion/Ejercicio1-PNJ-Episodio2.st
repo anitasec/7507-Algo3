@@ -6,6 +6,38 @@ DenotativeObject subclass: #Hamilton
 	category: 'Ejercicio1-PNJ-Episodio2'!
 
 
+!classDefinition: #InconscienteColectivoDelPueblo category: 'Ejercicio1-PNJ-Episodio2'!
+DenotativeObject subclass: #InconscienteColectivoDelPueblo
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Ejercicio1-PNJ-Episodio2'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'InconscienteColectivoDelPueblo class' category: 'Ejercicio1-PNJ-Episodio2'!
+InconscienteColectivoDelPueblo class
+	instanceVariableNames: 'personajesPrometedores'!
+
+!InconscienteColectivoDelPueblo class methodsFor: 'as yet unclassified' stamp: 'AG 9/29/2021 21:51:31'!
+esPrometedor: unPersonaje
+	^personajesPrometedores includes: unPersonaje! !
+
+!InconscienteColectivoDelPueblo class methodsFor: 'as yet unclassified' stamp: 'AG 9/29/2021 21:44:28'!
+hacerPrometedorA: unPersonaje
+	personajesPrometedores add: unPersonaje! !
+
+!InconscienteColectivoDelPueblo class methodsFor: 'as yet unclassified' stamp: 'AG 9/29/2021 22:03:00'!
+initializeCollaboratorsFromFile
+	"Auto generated method for loading purposes - Do not modify it"
+
+	personajesPrometedores := ((OrderedCollection new) add: Hamilton; yourself).! !
+
+!InconscienteColectivoDelPueblo class methodsFor: 'as yet unclassified' stamp: 'AG 9/29/2021 21:40:00'!
+olvidar
+	personajesPrometedores := OrderedCollection new! !
+
+
 !classDefinition: #PruebasInteracionesConCarolinaLaCurandera category: 'Ejercicio1-PNJ-Episodio2'!
 DenotativeObject subclass: #PruebasInteracionesConCarolinaLaCurandera
 	instanceVariableNames: ''
@@ -151,13 +183,13 @@ esVistoPorElPuebloComoPrometedor: unPersonaje
 hacerQueLaCuranderaOlvideSusInteracciones
 	"Implementar cuando sea necesario"! !
 
-!PruebasInteracionesConCarolinaLaCurandera class methodsFor: 'opiniones e interacciones' stamp: 'JMB 9/21/2021 21:02:50'!
+!PruebasInteracionesConCarolinaLaCurandera class methodsFor: 'opiniones e interacciones' stamp: 'AG 9/29/2021 21:36:48'!
 hacerQueRiverwoodOlvideTodasSusCalificaciones
-	"Implementar cuando sea necesario"! !
+	InconscienteColectivoDelPueblo olvidar! !
 
-!PruebasInteracionesConCarolinaLaCurandera class methodsFor: 'opiniones e interacciones' stamp: 'JMB 9/22/2021 00:09:48'!
+!PruebasInteracionesConCarolinaLaCurandera class methodsFor: 'opiniones e interacciones' stamp: 'AG 9/29/2021 21:42:46'!
 hacerQueRiverwoodVeaPrometedorAHamilton
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	InconscienteColectivoDelPueblo hacerPrometedorA: self hamilton! !
 
 !PruebasInteracionesConCarolinaLaCurandera class methodsFor: 'opiniones e interacciones' stamp: 'JMB 9/25/2021 12:48:36'!
 olvidarInteraccionesYOpiniones
@@ -297,13 +329,13 @@ treborElGuardia
 hacerQueElGuardiaOlvideSusInteracciones
 	TreborElGuardiaDeSkyrim olvidar.! !
 
-!PruebasInteracionesConTreborElGuardia class methodsFor: 'opiniones e interacciones' stamp: 'JMB 9/21/2021 20:53:36'!
+!PruebasInteracionesConTreborElGuardia class methodsFor: 'opiniones e interacciones' stamp: 'AG 9/29/2021 22:02:33'!
 hacerQueRiverwoodOlvideTodasSusCalificaciones
-	"Implementar cuando sea necesario"! !
+	InconscienteColectivoDelPueblo olvidar! !
 
-!PruebasInteracionesConTreborElGuardia class methodsFor: 'opiniones e interacciones' stamp: 'JMB 9/22/2021 00:06:53'!
+!PruebasInteracionesConTreborElGuardia class methodsFor: 'opiniones e interacciones' stamp: 'AG 9/29/2021 21:56:13'!
 hacerQueRiverwoodVeaPrometedorAHamilton
-	Assert isTrue: false description: 'Reemplazar esto por la implementación correspondiente'.! !
+	InconscienteColectivoDelPueblo hacerPrometedorA: self hamilton! !
 
 !PruebasInteracionesConTreborElGuardia class methodsFor: 'opiniones e interacciones' stamp: 'JMB 9/25/2021 12:52:12'!
 olvidarInteraccionesYOpiniones
@@ -331,36 +363,44 @@ DenotativeObject subclass: #TreborElGuardiaDeSkyrim
 
 !classDefinition: 'TreborElGuardiaDeSkyrim class' category: 'Ejercicio1-PNJ-Episodio2'!
 TreborElGuardiaDeSkyrim class
-	instanceVariableNames: 'cantidadDeInteracciones frases interaccionesPorPersonaje'!
+	instanceVariableNames: 'interaccionesPorPersonaje frases cantidadDeInteracciones frasesParaPrometedores'!
 
-!TreborElGuardiaDeSkyrim class methodsFor: 'interacciones' stamp: 'JMB 9/18/2021 11:24:19'!
+!TreborElGuardiaDeSkyrim class methodsFor: 'interacciones' stamp: 'AG 9/29/2021 21:13:57'!
 olvidar
-	cantidadDeInteracciones := 0! !
+	interaccionesPorPersonaje := Dictionary new! !
 
 
-!TreborElGuardiaDeSkyrim class methodsFor: 'interacciones - privado' stamp: 'JMB 9/18/2021 11:25:28'!
-recordarInteraccion
-	cantidadDeInteracciones := cantidadDeInteracciones + 1.
+!TreborElGuardiaDeSkyrim class methodsFor: 'interacciones - privado' stamp: 'AG 9/29/2021 21:13:16'!
+recordarInteraccionCon: unPersonaje
+	| contadorInteracciones |
+	contadorInteracciones := interaccionesPorPersonaje at: unPersonaje ifAbsent: [0].
+	contadorInteracciones := contadorInteracciones + 1.
+	interaccionesPorPersonaje at: unPersonaje put: contadorInteracciones
+
 ! !
 
-!TreborElGuardiaDeSkyrim class methodsFor: 'interacciones - privado' stamp: 'JMB 9/18/2021 11:35:15'!
-responderSegunCantidadDeInteracciones
-	^ frases at: (cantidadDeInteracciones min: frases size)! !
+!TreborElGuardiaDeSkyrim class methodsFor: 'interacciones - privado' stamp: 'AG 9/29/2021 22:01:17'!
+responderSegunCantidadDeInteraccionesCon: unPersonaje
+	| contadorInteracciones |
+	contadorInteracciones := interaccionesPorPersonaje at: unPersonaje.
+	(InconscienteColectivoDelPueblo esPrometedor: unPersonaje) ifTrue: 
+	[^ frasesParaPrometedores at: (contadorInteracciones min: frasesParaPrometedores size)].
+	^ frases at: (contadorInteracciones min: frases size)! !
 
 
-!TreborElGuardiaDeSkyrim class methodsFor: 'as yet unclassified' stamp: 'AS 9/27/2021 21:45:38'!
+!TreborElGuardiaDeSkyrim class methodsFor: 'as yet unclassified' stamp: 'AG 9/29/2021 22:03:00'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
-	cantidadDeInteracciones := 2.
+	interaccionesPorPersonaje := ((Dictionary new) add: (Hamilton->2); yourself).
 	frases := #('Hola forastero' '¿Todo bien?' '¿Algún problema?' ).
-	interaccionesPorPersonaje := ((Dictionary new)).! !
+	cantidadDeInteracciones := 4.
+	frasesParaPrometedores := #('Bienvenido aventurero!!' 'Espero que tengas una buena estadia en Riverwood' ).! !
 
-!TreborElGuardiaDeSkyrim class methodsFor: 'as yet unclassified' stamp: 'AS 9/27/2021 21:37:56'!
+!TreborElGuardiaDeSkyrim class methodsFor: 'as yet unclassified' stamp: 'AG 9/29/2021 21:16:48'!
 interactuarCon: unPersonaje
-	
-	self recordarInteraccion.
-	^ self responderSegunCantidadDeInteracciones
+	self recordarInteraccionCon: unPersonaje.
+	^self responderSegunCantidadDeInteraccionesCon: unPersonaje
 
 	
 	! !
@@ -370,5 +410,6 @@ interactuarCon: unPersonaje
 initialize
 	interaccionesPorPersonaje := Dictionary new.! !
 
+InconscienteColectivoDelPueblo initializeAfterFileIn!
 TreborElGuardiaDeSkyrim initialize!
 TreborElGuardiaDeSkyrim initializeAfterFileIn!
