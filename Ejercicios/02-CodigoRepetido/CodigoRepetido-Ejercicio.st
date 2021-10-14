@@ -21,22 +21,6 @@ TestCase subclass: #CustomerBookTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBookTest methodsFor: 'auxiliares' stamp: 'AS 10/11/2021 17:44:12'!
-calcularLaDiferenciaDeTiempoCon: unBloque
-	"comment stating purpose of message"
-
-	| millisecondsBeforeRunning millisecondsAfterRunning |
-	
-	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-	
-	unBloque value.
-	
-	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
-	
-	^millisecondsAfterRunning-millisecondsBeforeRunning
-	! !
-
-
 !CustomerBookTest methodsFor: 'tests' stamp: 'AS 10/11/2021 17:47:38'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
@@ -146,6 +130,22 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 ! !
 
 
+!CustomerBookTest methodsFor: 'auxiliares' stamp: 'AS 10/11/2021 17:44:12'!
+calcularLaDiferenciaDeTiempoCon: unBloque
+	"comment stating purpose of message"
+
+	| millisecondsBeforeRunning millisecondsAfterRunning |
+	
+	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	
+	unBloque value.
+	
+	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	
+	^millisecondsAfterRunning-millisecondsBeforeRunning
+	! !
+
+
 !CustomerBookTest methodsFor: 'auxiliares - assertion' stamp: 'AG 10/13/2021 18:32:58'!
 verificarCantidadDeClientesActivosCon: unaCantidadDeActivos CantidadDeClientesSuspendidosCon: unaCantidadDeSuspendidos CantidadTotalDeClientes: unaCantidadDeClientes Para: unLibroDeClientes
 	self assert: unaCantidadDeActivos equals: unLibroDeClientes numberOfActiveCustomers.
@@ -189,21 +189,22 @@ initialize
 	suspended:= OrderedCollection new.! !
 
 
-!CustomerBook methodsFor: 'customer management' stamp: 'AG 10/13/2021 18:33:58'!
+!CustomerBook methodsFor: 'customer management' stamp: 'AS 10/13/2021 21:55:11'!
 addCustomerNamed: aName
 
 	aName isEmpty ifTrue: [ self signalCustomerNameCannotBeEmpty ].
 	(self includesCustomerNamed: aName) ifTrue: [ self signalCustomerAlreadyExists ].
 	
-	active add: aName ! !
+	active add: aName! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'AG 10/13/2021 19:07:28'!
+!CustomerBook methodsFor: 'customer management' stamp: 'AS 10/13/2021 20:33:18'!
 removeCustomerNamed: aName 
- 	(((self removerCliente: aName de: active) = aName) or: ((self removerCliente: aName de: suspended) = aName)) ifTrue: [^aName].
-	^ NotFound signal
+	(self includesCustomerNamed: aName) ifFalse: [^NotFound signal].
+	self removerCliente: aName de: active.
+	self removerCliente: aName de: suspended.
 ! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
+!CustomerBook methodsFor: 'customer management' stamp: 'AS 10/13/2021 21:55:24'!
 suspendCustomerNamed: aName 
 	
 	(active includes: aName) ifFalse: [^CantSuspend signal].
@@ -252,17 +253,10 @@ signalCustomerNameCannotBeEmpty
 	self error: self class customerCanNotBeEmptyErrorMessage ! !
 
 
-!CustomerBook methodsFor: 'as yet unclassified' stamp: 'AG 10/13/2021 19:02:40'!
+!CustomerBook methodsFor: 'auxiliar - removal' stamp: 'AS 10/13/2021 20:30:38'!
 removerCliente: unCliente de: unaLista
-
-	1 to: unaLista size do: 
-		[ :index |
-			unCliente = (unaLista at: index)
-				ifTrue: [
-					unaLista removeAt: index.
-					^ unCliente 
-				] 
-		].! !
+	(unaLista includes: unCliente) ifFalse: [^ NotFound ].
+	unaLista removeAt: (unaLista indexOf: unCliente).! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
