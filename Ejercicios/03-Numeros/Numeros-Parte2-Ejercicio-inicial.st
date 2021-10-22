@@ -1,4 +1,4 @@
-!classDefinition: #NumeroTest category: 'Numeros-Parte2-Ejercicio'!
+!classDefinition: #NumeroTest category: #'Numeros-Parte2-Ejercicio'!
 TestCase subclass: #NumeroTest
 	instanceVariableNames: 'zero one two four oneFifth oneHalf five twoFifth twoTwentyfifth fiveHalfs three eight negativeOne negativeTwo'
 	classVariableNames: ''
@@ -287,7 +287,7 @@ setUp
 	! !
 
 
-!classDefinition: #Numero category: 'Numeros-Parte2-Ejercicio'!
+!classDefinition: #Numero category: #'Numeros-Parte2-Ejercicio'!
 Object subclass: #Numero
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -343,7 +343,7 @@ invalidNumberType
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Numero class' category: 'Numeros-Parte2-Ejercicio'!
+!classDefinition: 'Numero class' category: #'Numeros-Parte2-Ejercicio'!
 Numero class
 	instanceVariableNames: ''!
 
@@ -357,57 +357,34 @@ invalidNumberTypeErrorDescription
 	^ 'Tipo de Número Inválido'! !
 
 
-!classDefinition: #Entero category: 'Numeros-Parte2-Ejercicio'!
+!classDefinition: #Entero category: #'Numeros-Parte2-Ejercicio'!
 Numero subclass: #Entero
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:11:32'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
 * aMultiplier 
 	
-	(aMultiplier isKindOf: Fraccion) ifTrue: [
-		^(self * aMultiplier numerator) / aMultiplier denominator].
-	
-	(aMultiplier isKindOf: Entero) ifTrue: [
-		^self class with: value * aMultiplier integerValue
-].
-	self error: 'Imposible hacer esta cuenta'! !
+	^self class with: value * aMultiplier integerValue
+	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 01:36:36'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
 + anAdder 
 	
-	(anAdder isKindOf: Fraccion) ifTrue: [
-		^(self * anAdder denominator + anAdder numerator) / anAdder denominator].
-	
-	(anAdder isKindOf: Entero) ifTrue: [
-		^self class with: value + anAdder integerValue].
+	^self class with: value + anAdder integerValue
+! !
 
-	self error: 'Imposible hacer esta cuenta'! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:27:30'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
 - aSubtrahend 
 	
-	(aSubtrahend isKindOf: Fraccion) ifTrue: [
-		^(self * aSubtrahend denominator - aSubtrahend numerator) / aSubtrahend denominator].
-	
-	(aSubtrahend isKindOf: Entero) ifTrue: [
-		^ self class with: value - aSubtrahend integerValue.].
+	^ self class with: value - aSubtrahend integerValue.! !
 
-	self error: 'Imposible hacer esta cuenta'! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:19:05'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
 / aDivisor 
-
-	(aDivisor isKindOf: Fraccion) ifTrue: [
-		^(self * aDivisor denominator) / aDivisor numerator].
 	
-	(aDivisor isKindOf: Entero) ifTrue: [
-		^Fraccion with: self over: aDivisor
-].
-	self error: 'Imposible hacer esta cuenta'
-! !
+	^Fraccion with: self over: aDivisor! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -483,7 +460,7 @@ greatestCommonDivisorWith: anEntero
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Entero class' category: 'Numeros-Parte2-Ejercicio'!
+!classDefinition: 'Entero class' category: #'Numeros-Parte2-Ejercicio'!
 Entero class
 	instanceVariableNames: ''!
 
@@ -500,70 +477,44 @@ with: aValue
 	^self new initalizeWith: aValue! !
 
 
-!classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
+!classDefinition: #Fraccion category: #'Numeros-Parte2-Ejercicio'!
 Numero subclass: #Fraccion
 	instanceVariableNames: 'numerator denominator'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:16:32'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
 * aMultiplier 
-
-	(aMultiplier isKindOf: Fraccion) ifTrue: [
-		^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)].
 	
-	(aMultiplier isKindOf: Entero) ifTrue: [
-		^(numerator * aMultiplier) / (denominator)].
-	
-	self error: 'Imposible hacer esta cuenta' 
+	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 01:51:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
 + anAdder 
 	
-	(anAdder isKindOf: Fraccion) ifTrue: [
-		| newNumerator newDenominator |
-		
-		newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-		newDenominator := denominator * anAdder denominator.
-		
-		^self class with: newNumerator over: newDenominator].
+	| newNumerator newDenominator |
 	
-	(anAdder isKindOf: Entero) ifTrue: [
-		^(anAdder * self denominator + self numerator) / self denominator].
+	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
+	newDenominator := denominator * anAdder denominator.
 	
-	self error: 'Imposible hacer esta cuenta' ! !
+	^newNumerator / newDenominator ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:35:48'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
 - aSubtrahend 
 	
-	(aSubtrahend isKindOf: Fraccion) ifTrue: [
-		| newNumerator newDenominator |
+	| newNumerator newDenominator |
 	
-		newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-		newDenominator := denominator * aSubtrahend denominator.
+	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
+	newDenominator := denominator * aSubtrahend denominator.
 	
-		^newNumerator / newDenominator ].
-	
-	(aSubtrahend isKindOf: Entero) ifTrue: [
-		^(self numerator - (aSubtrahend * self denominator)) / self denominator].
-	
-	self error: 'Imposible hacer esta cuenta'
-	 
-
+	^newNumerator / newDenominator 
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:22:46'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
 / aDivisor 
 	
-	(aDivisor isKindOf: Fraccion) ifTrue: [
-		^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
-	
-	(aDivisor isKindOf: Entero) ifTrue: [
-		^(numerator/ (denominator * aDivisor))
-].
-	self error: 'Imposible hacer esta cuenta'! !
+	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -625,7 +576,7 @@ printOn: aStream
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Fraccion class' category: 'Numeros-Parte2-Ejercicio'!
+!classDefinition: 'Fraccion class' category: #'Numeros-Parte2-Ejercicio'!
 Fraccion class
 	instanceVariableNames: ''!
 
