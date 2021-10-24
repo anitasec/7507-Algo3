@@ -364,31 +364,25 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:11:32'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AS 10/24/2021 18:41:29'!
 * aMultiplier 
-	
-	(aMultiplier isKindOf: Fraccion) ifTrue: [
-		^(self * aMultiplier numerator) / aMultiplier denominator].
-	
-	(aMultiplier isKindOf: Entero) ifTrue: [
-		^self class with: value * aMultiplier integerValue
-].
-	self error: 'Imposible hacer esta cuenta'! !
+
+	^aMultiplier beMultipliedWithAnEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/23/2021 19:55:26'!
 + anAdder 
 	
 	^ anAdder beAddedToAnEntero: self! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/24/2021 02:55:08'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AS 10/24/2021 18:36:21'!
 - aSubtrahend 
 	
-	^aSubtrahend restaAUnEntero: self! !
+	^aSubtrahend substractFromAnEntero: self! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/24/2021 03:09:22'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AS 10/24/2021 18:29:47'!
 / aDivisor 
 
-	^ aDivisor divideAUnEntero: self
+	^ aDivisor divideToAnEntero: self
 ! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
@@ -415,6 +409,11 @@ fibonacci
 hash
 
 	^value hash! !
+
+!Entero methodsFor: 'comparing' stamp: 'AS 10/24/2021 18:58:54'!
+mmmm
+
+	self subclassResponsibility ! !
 
 
 !Entero methodsFor: 'initialization' stamp: 'HernanWilkinson 5/7/2016 20:09'!
@@ -464,40 +463,45 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (value gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/23/2021 19:52:56'!
+!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:16:59'!
 beAddedToAnEntero: anEnteroAugend
 
 	^self class with: anEnteroAugend integerValue + self integerValue! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/23/2021 20:12:30'!
+!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AG 10/23/2021 20:12:30'!
 beAddedToAnFraccion: anFraccionAugend
 
 	^(self * anFraccionAugend denominator + anFraccionAugend numerator) / anFraccionAugend denominator! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:03:53'!
-divideAUnEntero: anEnteroDividend
-	
-	^Fraccion with: anEnteroDividend over: self! !
+!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:18:35'!
+beMultipliedWithAFraccion: aFraccionMultiplier
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:25:48'!
-divideAUnaFraccion: anFraccionDividend
+	^(self * aFraccionMultiplier numerator) / aFraccionMultiplier denominator! !
+
+!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:18:49'!
+beMultipliedWithAnEntero: anEnteroMultiplier
+
+	^Entero with: value * anEnteroMultiplier integerValue! !
+
+!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:29:55'!
+divideToAFraccion: anFraccionDividend
 	
 	^(anFraccionDividend numerator/ (anFraccionDividend denominator * self))! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:18:32'!
-mmmm: nnn
+!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:29:13'!
+divideToAnEntero: anEnteroDividend
 	
-	^(nnn numerator/ (nnn denominator * self))! !
+	^Fraccion with: anEnteroDividend over: self! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 02:55:07'!
-restaAUnEntero: anEnteroMinuend
-	
-	^ self class with: anEnteroMinuend integerValue - self integerValue.! !
-
-!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 02:55:44'!
-restaAUnaFraccion: nnn
+!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:35:54'!
+substractFromAFraccion: nnn
 	
 	^(nnn numerator - (self * nnn denominator)) / nnn denominator! !
+
+!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:37:28'!
+substractFromAnEntero: anEnteroMinuend
+	
+	^ self class with: anEnteroMinuend integerValue - self integerValue.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -525,16 +529,10 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:16:32'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AS 10/24/2021 18:41:21'!
 * aMultiplier 
 
-	(aMultiplier isKindOf: Fraccion) ifTrue: [
-		^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)].
-	
-	(aMultiplier isKindOf: Entero) ifTrue: [
-		^(numerator * aMultiplier) / (denominator)].
-	
-	self error: 'Imposible hacer esta cuenta' 
+	^ aMultiplier beMultipliedWithAFraccion: self. 
 	! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/23/2021 20:12:51'!
@@ -542,18 +540,18 @@ Numero subclass: #Fraccion
 	
 	^anAdder beAddedToAnFraccion: self! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/24/2021 02:55:44'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AS 10/24/2021 18:35:54'!
 - aSubtrahend 
 	
-	^aSubtrahend restaAUnaFraccion: self
+	^aSubtrahend substractFromAFraccion: self
 	 
 
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/24/2021 03:22:11'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AS 10/24/2021 18:30:12'!
 / aDivisor 
 	
-	^aDivisor mmmm: self! !
+	^aDivisor divideToAFraccion: self! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -614,12 +612,12 @@ printOn: aStream
 		print: denominator ! !
 
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/23/2021 19:55:05'!
+!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AG 10/23/2021 19:55:05'!
 beAddedToAnEntero: anEnteroAugend
 
 	^(anEnteroAugend * self denominator + self numerator) / self denominator! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/23/2021 20:11:47'!
+!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AG 10/23/2021 20:11:47'!
 beAddedToAnFraccion: anFraccionAugend
 
 	| newNumerator newDenominator |
@@ -629,28 +627,30 @@ beAddedToAnFraccion: anFraccionAugend
 		
 	^self class with: newNumerator over: newDenominator! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:07:44'!
-divideAUnEntero: anEnteroDividend
-	
-	^(anEnteroDividend * self denominator) / self numerator! !
+!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:19:05'!
+beMultipliedWithAFraccion: aFraccionMultiplicand
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:25:13'!
-divideAUnaFraccion: anFraccionDividend
+	^(numerator * aFraccionMultiplicand numerator) / (denominator * aFraccionMultiplicand denominator)
+	! !
+
+!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:19:13'!
+beMultipliedWithAnEntero: anEnteroMultiplicand
+
+	^(numerator * anEnteroMultiplicand) / (denominator)
+	! !
+
+!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:39:25'!
+divideToAFraccion: anFraccionDividend
 	
 	^(anFraccionDividend numerator * self denominator) / (anFraccionDividend denominator * self numerator)! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:16:22'!
-mmmm: nnn
+!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:38:09'!
+divideToAnEntero: anEnteroDividend
 	
-	^(nnn numerator * self denominator) / (nnn denominator * self numerator)! !
+	^(anEnteroDividend * self denominator) / self numerator! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 02:55:08'!
-restaAUnEntero: anEnteroMinuend	
-
-	^(anEnteroMinuend * self denominator - self numerator) / self denominator! !
-
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 02:55:44'!
-restaAUnaFraccion: anFraccionMinuend
+!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:35:54'!
+substractFromAFraccion: anFraccionMinuend
 	
 	| newNumerator newDenominator |
 	
@@ -658,6 +658,11 @@ restaAUnaFraccion: anFraccionMinuend
 	newDenominator := anFraccionMinuend denominator * self denominator.
 
 	^newNumerator / newDenominator ! !
+
+!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:35:16'!
+substractFromAnEntero: anEnteroMinuend	
+
+	^(anEnteroMinuend * self denominator - self numerator) / self denominator! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
