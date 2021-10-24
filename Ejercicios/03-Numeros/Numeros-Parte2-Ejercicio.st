@@ -375,38 +375,20 @@ Numero subclass: #Entero
 ].
 	self error: 'Imposible hacer esta cuenta'! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 01:36:36'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/23/2021 19:55:26'!
 + anAdder 
 	
-	(anAdder isKindOf: Fraccion) ifTrue: [
-		^(self * anAdder denominator + anAdder numerator) / anAdder denominator].
-	
-	(anAdder isKindOf: Entero) ifTrue: [
-		^self class with: value + anAdder integerValue].
+	^ anAdder beAddedToAnEntero: self! !
 
-	self error: 'Imposible hacer esta cuenta'! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:27:30'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/24/2021 02:55:08'!
 - aSubtrahend 
 	
-	(aSubtrahend isKindOf: Fraccion) ifTrue: [
-		^(self * aSubtrahend denominator - aSubtrahend numerator) / aSubtrahend denominator].
-	
-	(aSubtrahend isKindOf: Entero) ifTrue: [
-		^ self class with: value - aSubtrahend integerValue.].
+	^aSubtrahend restaAUnEntero: self! !
 
-	self error: 'Imposible hacer esta cuenta'! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:19:05'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AG 10/24/2021 03:09:22'!
 / aDivisor 
 
-	(aDivisor isKindOf: Fraccion) ifTrue: [
-		^(self * aDivisor denominator) / aDivisor numerator].
-	
-	(aDivisor isKindOf: Entero) ifTrue: [
-		^Fraccion with: self over: aDivisor
-].
-	self error: 'Imposible hacer esta cuenta'
+	^ aDivisor divideAUnEntero: self
 ! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
@@ -481,6 +463,42 @@ greatestCommonDivisorWith: anEntero
 	
 	^self class with: (value gcd: anEntero integerValue)! !
 
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/23/2021 19:52:56'!
+beAddedToAnEntero: anEnteroAugend
+
+	^self class with: anEnteroAugend integerValue + self integerValue! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/23/2021 20:12:30'!
+beAddedToAnFraccion: anFraccionAugend
+
+	^(self * anFraccionAugend denominator + anFraccionAugend numerator) / anFraccionAugend denominator! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:03:53'!
+divideAUnEntero: anEnteroDividend
+	
+	^Fraccion with: anEnteroDividend over: self! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:25:48'!
+divideAUnaFraccion: anFraccionDividend
+	
+	^(anFraccionDividend numerator/ (anFraccionDividend denominator * self))! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:18:32'!
+mmmm: nnn
+	
+	^(nnn numerator/ (nnn denominator * self))! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 02:55:07'!
+restaAUnEntero: anEnteroMinuend
+	
+	^ self class with: anEnteroMinuend integerValue - self integerValue.! !
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 02:55:44'!
+restaAUnaFraccion: nnn
+	
+	^(nnn numerator - (self * nnn denominator)) / nnn denominator! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Entero class' category: 'Numeros-Parte2-Ejercicio'!
@@ -519,51 +537,23 @@ Numero subclass: #Fraccion
 	self error: 'Imposible hacer esta cuenta' 
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 01:51:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/23/2021 20:12:51'!
 + anAdder 
 	
-	(anAdder isKindOf: Fraccion) ifTrue: [
-		| newNumerator newDenominator |
-		
-		newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-		newDenominator := denominator * anAdder denominator.
-		
-		^self class with: newNumerator over: newDenominator].
-	
-	(anAdder isKindOf: Entero) ifTrue: [
-		^(anAdder * self denominator + self numerator) / self denominator].
-	
-	self error: 'Imposible hacer esta cuenta' ! !
+	^anAdder beAddedToAnFraccion: self! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:35:48'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/24/2021 02:55:44'!
 - aSubtrahend 
 	
-	(aSubtrahend isKindOf: Fraccion) ifTrue: [
-		| newNumerator newDenominator |
-	
-		newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-		newDenominator := denominator * aSubtrahend denominator.
-	
-		^newNumerator / newDenominator ].
-	
-	(aSubtrahend isKindOf: Entero) ifTrue: [
-		^(self numerator - (aSubtrahend * self denominator)) / self denominator].
-	
-	self error: 'Imposible hacer esta cuenta'
+	^aSubtrahend restaAUnaFraccion: self
 	 
 
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/22/2021 19:22:46'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AG 10/24/2021 03:22:11'!
 / aDivisor 
 	
-	(aDivisor isKindOf: Fraccion) ifTrue: [
-		^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)].
-	
-	(aDivisor isKindOf: Entero) ifTrue: [
-		^(numerator/ (denominator * aDivisor))
-].
-	self error: 'Imposible hacer esta cuenta'! !
+	^aDivisor mmmm: self! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -622,6 +612,52 @@ printOn: aStream
 		print: numerator;
 		nextPut: $/;
 		print: denominator ! !
+
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/23/2021 19:55:05'!
+beAddedToAnEntero: anEnteroAugend
+
+	^(anEnteroAugend * self denominator + self numerator) / self denominator! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/23/2021 20:11:47'!
+beAddedToAnFraccion: anFraccionAugend
+
+	| newNumerator newDenominator |
+		
+	newNumerator := (anFraccionAugend numerator * self denominator) + (anFraccionAugend denominator * self numerator).
+	newDenominator := anFraccionAugend denominator * self denominator.
+		
+	^self class with: newNumerator over: newDenominator! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:07:44'!
+divideAUnEntero: anEnteroDividend
+	
+	^(anEnteroDividend * self denominator) / self numerator! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:25:13'!
+divideAUnaFraccion: anFraccionDividend
+	
+	^(anFraccionDividend numerator * self denominator) / (anFraccionDividend denominator * self numerator)! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 03:16:22'!
+mmmm: nnn
+	
+	^(nnn numerator * self denominator) / (nnn denominator * self numerator)! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 02:55:08'!
+restaAUnEntero: anEnteroMinuend	
+
+	^(anEnteroMinuend * self denominator - self numerator) / self denominator! !
+
+!Fraccion methodsFor: 'as yet unclassified' stamp: 'AG 10/24/2021 02:55:44'!
+restaAUnaFraccion: anFraccionMinuend
+	
+	| newNumerator newDenominator |
+	
+	newNumerator := (anFraccionMinuend numerator * self denominator) - (anFraccionMinuend denominator * self numerator).
+	newDenominator := anFraccionMinuend denominator * self denominator.
+
+	^newNumerator / newDenominator ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
