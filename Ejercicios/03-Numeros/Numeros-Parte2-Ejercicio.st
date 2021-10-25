@@ -385,10 +385,10 @@ Numero subclass: #Entero
 	^ aDivisor divideToAnEntero: self
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AS 10/24/2021 21:56:37'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AS 10/25/2021 14:29:49'!
 fibonacci
 	
-	^ self mmmm. 
+	^ self calculateFibonacci. 
 	
 	
 		! !
@@ -399,18 +399,18 @@ fibonacci
 
 	^(anObject isKindOf: self class) and: [ value = anObject integerValue ]! !
 
-!Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:17'!
-hash
-
-	^value hash! !
-
-!Entero methodsFor: 'comparing' stamp: 'AS 10/24/2021 22:15:00'!
-mmmm
+!Entero methodsFor: 'comparing' stamp: 'AS 10/25/2021 14:29:49'!
+calculateFibonacci
 	| one two |
 	one := Entero with: 1.
 	two := Entero with: 2.
 	
 	^(self - one) fibonacci + (self - two) fibonacci ! !
+
+!Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:17'!
+hash
+
+	^value hash! !
 
 
 !Entero methodsFor: 'initialization' stamp: 'AS 10/24/2021 21:42:19'!
@@ -490,10 +490,10 @@ divideToAnEntero: anEnteroDividend
 	
 	^Fraccion with: anEnteroDividend over: self! !
 
-!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:35:54'!
-substractFromAFraccion: nnn
+!Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/25/2021 14:36:49'!
+substractFromAFraccion: aFraccionMinuend
 	
-	^(nnn numerator - (self * nnn denominator)) / nnn denominator! !
+	^(aFraccionMinuend numerator - (self * aFraccionMinuend denominator)) / aFraccionMinuend denominator! !
 
 !Entero methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:37:28'!
 substractFromAnEntero: anEnteroMinuend
@@ -529,8 +529,8 @@ Entero subclass: #Negative
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Negative methodsFor: 'as yet unclassified' stamp: 'AS 10/24/2021 22:10:12'!
-mmmm
+!Negative methodsFor: 'as yet unclassified' stamp: 'AS 10/25/2021 14:29:49'!
+calculateFibonacci
 	^ self error: Entero negativeFibonacciErrorDescription 
 	
 	! !
@@ -543,8 +543,8 @@ Entero subclass: #One
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!One methodsFor: 'as yet unclassified' stamp: 'AS 10/24/2021 21:09:32'!
-mmmm
+!One methodsFor: 'as yet unclassified' stamp: 'AS 10/25/2021 14:29:49'!
+calculateFibonacci
 	^ Entero with: 1! !
 
 
@@ -555,8 +555,8 @@ Entero subclass: #Zero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Zero methodsFor: 'as yet unclassified' stamp: 'AS 10/24/2021 21:09:51'!
-mmmm
+!Zero methodsFor: 'as yet unclassified' stamp: 'AS 10/25/2021 14:29:49'!
+calculateFibonacci
 	^Entero with: 1! !
 
 
@@ -701,6 +701,7 @@ substractFromAFraccion: anFraccionMinuend
 substractFromAnEntero: anEnteroMinuend	
 
 	^(anEnteroMinuend * self denominator - self numerator) / self denominator! !
+
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
