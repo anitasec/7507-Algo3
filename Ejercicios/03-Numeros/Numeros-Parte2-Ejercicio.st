@@ -385,18 +385,12 @@ Numero subclass: #Entero
 	^ aDivisor divideToAnEntero: self
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AS 10/24/2021 21:56:37'!
 fibonacci
-
-	| one two |
 	
-	one := Entero with: 1.
-	two := Entero with: 2.
+	^ self mmmm. 
 	
-	self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
-	(self isZero or: [self isOne]) ifTrue: [^one].
 	
-	^ (self - one) fibonacci + (self - two) fibonacci
 		! !
 
 
@@ -410,14 +404,17 @@ hash
 
 	^value hash! !
 
-!Entero methodsFor: 'comparing' stamp: 'AS 10/24/2021 18:58:54'!
+!Entero methodsFor: 'comparing' stamp: 'AS 10/24/2021 22:15:00'!
 mmmm
+	| one two |
+	one := Entero with: 1.
+	two := Entero with: 2.
+	
+	^(self - one) fibonacci + (self - two) fibonacci ! !
 
-	self subclassResponsibility ! !
 
-
-!Entero methodsFor: 'initialization' stamp: 'HernanWilkinson 5/7/2016 20:09'!
-initalizeWith: aValue 
+!Entero methodsFor: 'initialization' stamp: 'AS 10/24/2021 21:42:19'!
+initializeWith: aValue 
 	
 	value := aValue! !
 
@@ -513,13 +510,54 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'HernanWilkinson 5/7/2016 22:53'!
+!Entero class methodsFor: 'instance creation' stamp: 'AS 10/24/2021 22:15:14'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
+	(aValue = 0) ifTrue:[^Zero new initializeWith: aValue].
+	(aValue = 1) ifTrue:[^One new initializeWith: aValue].
+	(aValue < 0) ifTrue:[^Negative new initializeWith: aValue].
 	
-	^self new initalizeWith: aValue! !
+	^Entero new initializeWith: aValue! !
+
+
+!classDefinition: #Negative category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Negative
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Negative methodsFor: 'as yet unclassified' stamp: 'AS 10/24/2021 22:10:12'!
+mmmm
+	^ self error: Entero negativeFibonacciErrorDescription 
+	
+	! !
+
+
+!classDefinition: #One category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #One
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!One methodsFor: 'as yet unclassified' stamp: 'AS 10/24/2021 21:09:32'!
+mmmm
+	^ Entero with: 1! !
+
+
+!classDefinition: #Zero category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Zero
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Zero methodsFor: 'as yet unclassified' stamp: 'AS 10/24/2021 21:09:51'!
+mmmm
+	^Entero with: 1! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
@@ -627,7 +665,7 @@ beAddedToAnFraccion: anFraccionAugend
 		
 	^self class with: newNumerator over: newDenominator! !
 
-!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 18:19:05'!
+!Fraccion methodsFor: 'auxiliary arithmetic operations' stamp: 'AS 10/24/2021 21:53:21'!
 beMultipliedWithAFraccion: aFraccionMultiplicand
 
 	^(numerator * aFraccionMultiplicand numerator) / (denominator * aFraccionMultiplicand denominator)
