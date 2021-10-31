@@ -147,24 +147,26 @@ TestCase subclass: #SentenceFinderByPrefixTest
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'stack'
+	instanceVariableNames: 'stack empty'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'initialization' stamp: 'AG 10/29/2021 19:43:34'!
+!OOStack methodsFor: 'initialization' stamp: 'AS 10/31/2021 18:19:08'!
 initialize
-	stack := OrderedCollection new! !
+	stack := OrderedCollection new.
+	! !
 
 
-!OOStack methodsFor: 'testing' stamp: 'AG 10/29/2021 19:52:56'!
+!OOStack methodsFor: 'testing' stamp: 'AS 10/31/2021 18:16:05'!
 isEmpty
-	^stack size = 0! !
+	^ self size = 0.! !
 
 
-!OOStack methodsFor: 'popping' stamp: 'AG 10/29/2021 19:56:25'!
+!OOStack methodsFor: 'popping' stamp: 'AS 10/31/2021 18:17:03'!
 pop
-	^stack removeLast ! !
+	(self isEmpty) ifTrue: [^ self error: OOStack stackEmptyErrorDescription].
+	^stack removeLast! !
 
 
 !OOStack methodsFor: 'pushing' stamp: 'AG 10/29/2021 19:46:27'!
@@ -176,8 +178,9 @@ push: aString
 size
 	^stack size! !
 
-!OOStack methodsFor: 'accessing' stamp: 'AG 10/29/2021 20:12:26'!
+!OOStack methodsFor: 'accessing' stamp: 'AS 10/31/2021 18:17:21'!
 top
+	self isEmpty ifTrue: [^ self error: OOStack stackEmptyErrorDescription].
 	^stack at: (stack size)! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -190,6 +193,30 @@ OOStack class
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+
+!classDefinition: #EmptyOOStack category: 'Stack-Exercise'!
+OOStack subclass: #EmptyOOStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AS 10/31/2021 17:54:04'!
+isEmpty
+	^ true.! !
+
+!EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AS 10/31/2021 17:44:31'!
+pop
+	^ self error: OOStack stackEmptyErrorDescription! !
+
+!EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AS 10/31/2021 18:00:13'!
+push: aString
+	^ OOStack new push: aString! !
+
+!EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AS 10/31/2021 17:44:26'!
+top
+	^ self error: OOStack stackEmptyErrorDescription! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
