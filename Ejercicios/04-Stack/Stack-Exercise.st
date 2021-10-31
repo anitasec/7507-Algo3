@@ -147,14 +147,14 @@ TestCase subclass: #SentenceFinderByPrefixTest
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'stack empty'
+	instanceVariableNames: 'stackType empty type'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'initialization' stamp: 'AS 10/31/2021 18:19:08'!
+!OOStack methodsFor: 'initialization' stamp: 'AG 10/31/2021 19:15:13'!
 initialize
-	stack := OrderedCollection new.
+	stackType := EmptyOOStack new 
 	! !
 
 
@@ -163,25 +163,28 @@ isEmpty
 	^ self size = 0.! !
 
 
-!OOStack methodsFor: 'popping' stamp: 'AS 10/31/2021 18:17:03'!
+!OOStack methodsFor: 'popping' stamp: 'AG 10/31/2021 19:19:30'!
 pop
-	(self isEmpty) ifTrue: [^ self error: OOStack stackEmptyErrorDescription].
-	^stack removeLast! !
+	^stackType pop: self! !
 
 
-!OOStack methodsFor: 'pushing' stamp: 'AG 10/29/2021 19:46:27'!
+!OOStack methodsFor: 'pushing' stamp: 'AG 10/31/2021 19:30:54'!
 push: aString 
-	stack add: aString! !
+	stackType push: aString toOOStack: self! !
 
 
-!OOStack methodsFor: 'accessing' stamp: 'AG 10/29/2021 20:16:18'!
+!OOStack methodsFor: 'accessing' stamp: 'AG 10/31/2021 19:15:13'!
 size
-	^stack size! !
+	^stackType size! !
 
-!OOStack methodsFor: 'accessing' stamp: 'AS 10/31/2021 18:17:21'!
+!OOStack methodsFor: 'accessing' stamp: 'AG 10/31/2021 19:17:23'!
 top
-	self isEmpty ifTrue: [^ self error: OOStack stackEmptyErrorDescription].
-	^stack at: (stack size)! !
+	^stackType top! !
+
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 19:15:13'!
+cambiarTipo: unTipo
+	stackType := unTipo! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -195,8 +198,24 @@ stackEmptyErrorDescription
 	^ 'Stack is empty'! !
 
 
+!classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
+Object subclass: #SentenceFinderByPrefix
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+
+!classDefinition: #StackType category: 'Stack-Exercise'!
+Object subclass: #StackType
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+
 !classDefinition: #EmptyOOStack category: 'Stack-Exercise'!
-OOStack subclass: #EmptyOOStack
+StackType subclass: #EmptyOOStack
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -206,22 +225,58 @@ OOStack subclass: #EmptyOOStack
 isEmpty
 	^ true.! !
 
-!EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AS 10/31/2021 17:44:31'!
-pop
-	^ self error: OOStack stackEmptyErrorDescription! !
+!EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 19:24:16'!
+pop: OOStack
+	^ self error: 'Stack is empty'! !
 
-!EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AS 10/31/2021 18:00:13'!
-push: aString
-	^ OOStack new push: aString! !
+!EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 19:33:02'!
+push: aString toOOStack: anOOStack
+	anOOStack cambiarTipo: NormalStack new.
+	anOOStack push: aString! !
+
+!EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 19:15:58'!
+size
+	^0! !
 
 !EmptyOOStack methodsFor: 'as yet unclassified' stamp: 'AS 10/31/2021 17:44:26'!
 top
 	^ self error: OOStack stackEmptyErrorDescription! !
 
 
-!classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
-Object subclass: #SentenceFinderByPrefix
-	instanceVariableNames: ''
+!classDefinition: #NormalStack category: 'Stack-Exercise'!
+StackType subclass: #NormalStack
+	instanceVariableNames: 'stack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!NormalStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 18:50:43'!
+initialize
+
+	stack := OrderedCollection new! !
+
+!NormalStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 18:48:14'!
+isEmpty
+	^ false! !
+
+!NormalStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 19:35:25'!
+pop: OOStack
+	| lastItem |
+	
+	lastItem := stack removeLast.
+	(stack size = 0) ifTrue: [OOStack cambiarTipo: EmptyOOStack new].
+	^lastItem
+	! !
+
+!NormalStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 19:28:59'!
+push: aString toOOStack: anOOStack
+	stack add: aString! !
+
+!NormalStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 19:16:24'!
+size
+	^stack size! !
+
+!NormalStack methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 18:56:41'!
+top
+
+	^stack at: (stack size)! !
