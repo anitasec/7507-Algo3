@@ -147,61 +147,73 @@ TestCase subclass: #SentenceFinderByPrefixTest
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'stackContent stackState stackStateSwitcher'
+	instanceVariableNames: 'stackContent stackState'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'initialization' stamp: 'AS 11/1/2021 21:08:30'!
+!OOStack methodsFor: 'initialization' stamp: 'AG 11/2/2021 13:42:25'!
 initialize
+
 	stackContent := OrderedCollection new.
-	stackState := EmptyState new.
-	stackStateSwitcher := StackStateSwitcher new.! !
+	stackState := EmptyState new.! !
 
 
-!OOStack methodsFor: 'testing' stamp: 'AS 10/31/2021 18:16:05'!
+!OOStack methodsFor: 'testing' stamp: 'AG 11/2/2021 13:42:30'!
 isEmpty
+
 	^ self size = 0.! !
 
 
-!OOStack methodsFor: 'popping' stamp: 'AS 11/1/2021 20:43:14'!
+!OOStack methodsFor: 'popping' stamp: 'AG 11/2/2021 13:42:37'!
 pop
+
 	^stackState popFromStack: self! !
 
 
-!OOStack methodsFor: 'pushing' stamp: 'AS 11/1/2021 20:54:26'!
+!OOStack methodsFor: 'pushing' stamp: 'AG 11/2/2021 13:42:52'!
 push: aString 
+
 	stackState push: aString toOOStack: self.! !
 
 
-!OOStack methodsFor: 'accessing' stamp: 'AS 11/1/2021 20:39:34'!
+!OOStack methodsFor: 'accessing' stamp: 'AG 11/2/2021 13:43:07'!
 size
+
 	^stackContent size! !
 
-!OOStack methodsFor: 'accessing' stamp: 'AS 11/1/2021 20:41:04'!
+!OOStack methodsFor: 'accessing' stamp: 'AG 11/2/2021 13:43:21'!
 top
+
 	^stackState topFrom: self! !
 
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 20:42:55'!
-cambiarTipo: unTipo
-	stackState := unTipo! !
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:42:44'!
+popAnElement
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 21:12:03'!
-xxxx
-	| item |
+	| item aSubclass |
 	item := stackContent removeLast.
-	stackStateSwitcher switchState: self.
+	
+	aSubclass := StackState subclasses detect: [ :subclass | subclass canInstanciateWith: (stackContent size)].
+	self switchState: aSubclass new.
 	^ item! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 20:39:48'!
-yyyy
-	^ stackContent at: self size! !
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:43:00'!
+pushElement: anElement
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 20:54:44'!
-zzzz: aString
-	stackContent add: aString
+	stackContent add: anElement.
+	self switchState: NonEmptyState new.
 	! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:43:14'!
+switchState: aNewStackState
+
+	stackState := aNewStackState! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:43:28'!
+viewTop
+
+	^ stackContent at: self size! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -230,6 +242,37 @@ Object subclass: #StackState
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!StackState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:23'!
+isEmpty
+
+	^ self subclassResponsibility ! !
+
+!StackState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:28'!
+popFromStack: OOStack
+
+	^ self subclassResponsibility ! !
+
+!StackState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:33'!
+push: aString toOOStack: anOOStack
+
+	^ self subclassResponsibility ! !
+
+!StackState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:37'!
+topFrom: anOOStack
+
+	^ self subclassResponsibility ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'StackState class' category: 'Stack-Exercise'!
+StackState class
+	instanceVariableNames: ''!
+
+!StackState class methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:45:03'!
+canInstanciateWith: aSize
+
+	^ self subclassResponsibility ! !
+
 
 !classDefinition: #EmptyState category: 'Stack-Exercise'!
 StackState subclass: #EmptyState
@@ -238,22 +281,36 @@ StackState subclass: #EmptyState
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!EmptyState methodsFor: 'as yet unclassified' stamp: 'AS 10/31/2021 17:54:04'!
+!EmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:42:01'!
 isEmpty
+
 	^ true.! !
 
-!EmptyState methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 20:36:41'!
+!EmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:42:05'!
 popFromStack: OOStack
+
 	^ self error: 'Stack is empty'! !
 
-!EmptyState methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 21:08:45'!
+!EmptyState methodsFor: 'as yet unclassified' stamp: 'AA 11/2/2021 13:34:57'!
 push: aString toOOStack: anOOStack
-	anOOStack cambiarTipo: NonEmptyState new.
-	anOOStack zzzz: aString! !
 
-!EmptyState methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 20:41:16'!
+	anOOStack pushElement: aString! !
+
+!EmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:42:12'!
 topFrom: anOOStack
+
 	^ self error: OOStack stackEmptyErrorDescription! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'EmptyState class' category: 'Stack-Exercise'!
+EmptyState class
+	instanceVariableNames: ''!
+
+!EmptyState class methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:43:52'!
+canInstanciateWith: aSize
+
+	^aSize = 0! !
 
 
 !classDefinition: #NonEmptyState category: 'Stack-Exercise'!
@@ -263,33 +320,35 @@ StackState subclass: #NonEmptyState
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AG 10/31/2021 18:48:14'!
+!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:52'!
 isEmpty
+
 	^ false! !
 
-!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 20:51:30'!
+!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:56'!
 popFromStack: OOStack	
-	^ OOStack xxxx.
+
+	^ OOStack popAnElement.
 	
 	! !
 
-!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 20:31:31'!
+!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:47'!
 push: aString toOOStack: anOOStack
-	anOOStack zzzz: aString! !
 
-!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 20:51:36'!
+	anOOStack pushElement: aString! !
+
+!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AA 11/2/2021 13:27:52'!
 topFrom: OOStack
 
-	^ OOStack yyyy! !
+	^ OOStack viewTop! !
 
-
-!classDefinition: #StackStateSwitcher category: 'Stack-Exercise'!
-Object subclass: #StackStateSwitcher
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!StackStateSwitcher methodsFor: 'as yet unclassified' stamp: 'AS 11/1/2021 21:13:14'!
-switchState: anOOStack
-	(anOOStack size = 0) ifTrue:[anOOStack cambiarTipo: EmptyState new.].! !
+!classDefinition: 'NonEmptyState class' category: 'Stack-Exercise'!
+NonEmptyState class
+	instanceVariableNames: ''!
+
+!NonEmptyState class methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:44:01'!
+canInstanciateWith: aSize
+
+	^aSize > 0! !
