@@ -144,33 +144,162 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 19:45:35'!
-test01XXX
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:45:10'!
+test01WhenInitializingWithEmptyStackShouldReturnEmptyCollection
 
-	| stack sentenceFinder |
+	| sentenceFinder collection |
 
-	stack := OOStack new.
-	self assert: stack isEmpty.
+	sentenceFinder := SentenceFinderByPrefix with: OOStack new.
 	
-	sentenceFinder := SentenceFinderByPrefix with: stack.
+	collection := sentenceFinder find: 'Winter'.
+	
+	self assert: collection size equals: 0. 
+	
 	
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 19:56:57'!
-test02XXX
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:45:24'!
+test02WhenFindingAStringShouldReturnANewCollectionWithOneString
 
-	| stack sentenceFinder |
+	| stack sentenceFinder collection |
+	
+	stack := OOStack new push: 'Winter'.
+
+	sentenceFinder := SentenceFinderByPrefix with: stack.
+	
+	collection := sentenceFinder find: 'Winter'.
+	
+	self assert: collection size equals: 1. 
+	
+	
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:46:03'!
+test03WhenFindingAStringShouldReturnANewCollectionWithThatString
+
+	| stack sentenceFinder collection |
+	
+	stack := OOStack new push: 'Winter'.
+
+	sentenceFinder := SentenceFinderByPrefix with: stack.
+	
+	collection := sentenceFinder find: 'Winter'.
+	
+	self assert: 'Winter' equals: collection first.
+	
+	
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 20:01:55'!
+test04WhenNotFindingAStringShouldReturnAnEmptyCollection
+
+	| stack sentenceFinder collection |
+	
+	stack := OOStack new push: 'Winter'.
+
+	sentenceFinder := SentenceFinderByPrefix with: stack.
+	
+	collection := sentenceFinder find: 'winning'.
+	
+	self assert: 0 equals: collection size
+	
+	
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 20:03:35'!
+test05WhenAPrefixSizeIsZeroShouldReturnError
+
+	| sentenceFinder |
+
+	sentenceFinder := SentenceFinderByPrefix with: OOStack new.
+	
+	self
+		should: [ sentenceFinder find: '' ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = SentenceFinderByPrefix invalidPrefixErrorDescription ]
+	
+	
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 20:04:19'!
+test06WhenAPrefixContainsEmptySpaceShouldReturnError
+
+	| sentenceFinder |
+
+	sentenceFinder := SentenceFinderByPrefix with: OOStack new.
+	
+	self
+		should: [ sentenceFinder find: 'winter is' ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = SentenceFinderByPrefix invalidPrefixErrorDescription ]
+	
+	
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 20:13:36'!
+test07WhenFindingTwoStringsShouldReturnACollectionWithSizeTwo
+
+	| stack sentenceFinder collection |
 
 	stack := OOStack new.
-	stack push: 'winter is coming'; push: 'winning is everything'; push: 'The winds of Winter'; push: 'Winter is here'.
+	stack push: 'winter is coming'; push: 'winning is everything'.
 	
 	sentenceFinder := SentenceFinderByPrefix with: stack.
 	
-	sentenceFinder find: 'wint'! !
+	collection := sentenceFinder find: 'win'.
+	
+	self assert: collection size equals: 2.
+	
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 20:14:52'!
-test03SentenceFinderByPrefixWhenFindStackIsNotModified
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 20:13:51'!
+test08WhenFindingTwoStringsShouldReturnACollectionWithTwoStrings
+
+	| stack sentenceFinder collection |
+
+	stack := OOStack new.
+	stack push: 'winter is coming'; push: 'winning is everything'.
+	
+	sentenceFinder := SentenceFinderByPrefix with: stack.
+	
+	collection := sentenceFinder find: 'win'.
+	
+	self assert: collection includes: 'winter is coming'.
+	self assert: collection includes: 'winning is everything'.
+	
+
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:44:52'!
+test222XXX
+
+	 | stack sentenceFinder sentences expectedSentences |
+
+    	expectedSentences := OrderedCollection new.
+	expectedSentences add: 'Winter is here'.
+
+    	stack := OOStack new.
+    	stack push: 'winter is coming'; push: 'winning is everything'; push: 'The winds of Winter'; push: 'Winter is here'.
+
+    	sentenceFinder := SentenceFinderByPrefix with: stack.
+
+    	sentences := sentenceFinder find: 'Wint'.
+
+    	self assert: expectedSentences equals: sentences! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:44:45'!
+test333SentenceFinderByPrefixWhenFindStackIsNotModified
 
 	| stack sentenceFinder |
 
@@ -271,21 +400,28 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 21:29:30'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:10:04'!
+evaluateA: aBlock popElementFromStack: anOOStack andPushElementToStack: anotherOOStack
+
+	[anOOStack isEmpty] whileFalse: [ 
+		aBlock value.
+		anotherOOStack push: anOOStack pop.
+	].! !
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:16:04'!
 find: aPrefix
 
-	| stackAux top|
-	stackAux := OOStack new.
-	[stack isEmpty] whileFalse: [ 
-		top := stack pop.
-		((top findString: aPrefix startingAt: 1 caseSensitive: true) = 1) ifTrue:[
-			prefixes add: top]	.
-		stackAux push: top.
-	].
+	| stackAux top |
 
-	[stackAux isEmpty] whileFalse: [ 
-		stack push: stackAux pop.
-	].
+	(self prefixIsValid: aPrefix) ifFalse: [^ self error: SentenceFinderByPrefix invalidPrefixErrorDescription].
+
+	stackAux := OOStack new.
+	self evaluateA: [ 
+		top := stack top.
+		((top findString: aPrefix startingAt: 1 caseSensitive: true) = 1) ifTrue:[
+			prefixes add: top]	] popElementFromStack: stack andPushElementToStack: stackAux.
+	
+	self evaluateA: [] popElementFromStack: stackAux andPushElementToStack: stack.
 
 	^ prefixes
 ! !
@@ -296,14 +432,25 @@ initalizeWith: aStack
 	stack := aStack.
 	prefixes := OrderedCollection new.! !
 
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 18:58:13'!
+prefixIsValid: aPrefix
+
+    ^(aPrefix size = 0 or: (aPrefix includesSubString: ' ')) not! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
 
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 19:43:21'!
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:14:53'!
+invalidPrefixErrorDescription
+	^ 'Prefix is invalid'! !
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:29:11'!
 with: aStack
+	
+	(aStack isKindOf: OOStack) ifFalse: [ self error: 'aStack has to be an instance of OOStack' ].
 	
 	^self new initalizeWith: aStack! !
 
@@ -359,10 +506,10 @@ isEmpty
 
 	^ true.! !
 
-!EmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:42:05'!
-popFromStack: OOStack
+!EmptyState methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 18:57:12'!
+popFromStack: anOOStack
 
-	^ self error: 'Stack is empty'! !
+	^ self error: OOStack stackEmptyErrorDescription ! !
 
 !EmptyState methodsFor: 'as yet unclassified' stamp: 'AA 11/2/2021 13:34:57'!
 push: aString toOOStack: anOOStack
