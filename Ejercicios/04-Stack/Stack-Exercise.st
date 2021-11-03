@@ -144,6 +144,43 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 19:45:35'!
+test01XXX
+
+	| stack sentenceFinder |
+
+	stack := OOStack new.
+	self assert: stack isEmpty.
+	
+	sentenceFinder := SentenceFinderByPrefix with: stack.
+	
+	
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 19:56:57'!
+test02XXX
+
+	| stack sentenceFinder |
+
+	stack := OOStack new.
+	stack push: 'winter is coming'; push: 'winning is everything'; push: 'The winds of Winter'; push: 'Winter is here'.
+	
+	sentenceFinder := SentenceFinderByPrefix with: stack.
+	
+	sentenceFinder find: 'wint'! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 20:14:52'!
+test03SentenceFinderByPrefixWhenFindStackIsNotModified
+
+	| stack sentenceFinder |
+
+	stack := OOStack new.
+	stack push: 'winter is coming'; push: 'winning is everything'; push: 'The winds of Winter'; push: 'Winter is here'.
+	
+	sentenceFinder := SentenceFinderByPrefix with: stack.
+	
+	sentenceFinder find: 'wint'! !
+
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
@@ -229,10 +266,46 @@ stackEmptyErrorDescription
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
-	instanceVariableNames: ''
+	instanceVariableNames: 'prefixes stack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 21:29:30'!
+find: aPrefix
+
+	| stackAux top|
+	stackAux := OOStack new.
+	[stack isEmpty] whileFalse: [ 
+		top := stack pop.
+		((top findString: aPrefix startingAt: 1 caseSensitive: true) = 1) ifTrue:[
+			prefixes add: top]	.
+		stackAux push: top.
+	].
+
+	[stackAux isEmpty] whileFalse: [ 
+		stack push: stackAux pop.
+	].
+
+	^ prefixes
+! !
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 19:47:57'!
+initalizeWith: aStack 
+	
+	stack := aStack.
+	prefixes := OrderedCollection new.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'SentenceFinderByPrefix class' category: 'Stack-Exercise'!
+SentenceFinderByPrefix class
+	instanceVariableNames: ''!
+
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 19:43:21'!
+with: aStack
+	
+	^self new initalizeWith: aStack! !
 
 
 !classDefinition: #StackState category: 'Stack-Exercise'!
