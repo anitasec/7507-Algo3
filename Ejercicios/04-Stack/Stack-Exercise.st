@@ -297,20 +297,17 @@ test09AfterUseFindTheStackBehavesLIFO
 	self assert: stack pop = firstPushedObject.
 	self assert: stack isEmpty ! !
 
-!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AG 11/4/2021 03:44:54'!
-test10ThePrefixIsCaseSensitiveAndFindReturnTheCorrectStrings
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AS 11/4/2021 11:00:16'!
+test10AfterFindStackShouldHaveTheSameSizeAsBefore
 
-	| stack sentenceFinder collection |
+	| stack sentenceFinder |
 	
-	stack := OOStack new push: 'winter is coming'; push: 'Winter is here'.
-
+	stack := OOStack new push: 'Winter'.
+	
 	sentenceFinder := SentenceFinderByPrefix with: stack.
+	sentenceFinder find: 'Winter'.
 	
-	collection := sentenceFinder find: 'Wint'.
-	
-	self assert: 1 equals: collection size.
-	self assert: collection includes: 'Winter is here'.
-	! !
+	self assert: 1 equals: stack size. ! !
 
 !SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AG 11/4/2021 03:45:06'!
 test11TheFinderDoesNotFindAStringIfContainThePrefixButNotInTheBeginning
@@ -359,9 +356,36 @@ test13WhenAPrefixContainsEmptySpaceShouldReturnError
 	
 	! !
 
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AS 11/4/2021 10:53:26'!
+test14WhenNotInitializedWithAnOOStackShouldReturnError
+	
+	self
+		should: [ SentenceFinderByPrefix with: 'Winter' ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = SentenceFinderByPrefix invalidInitialization ]
+	
+	
+	
+	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:44:52'!
-test222XXX
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AS 11/4/2021 11:00:39'!
+test15ThePrefixIsCaseSensitiveAndFindReturnTheCorrectStrings
+
+	| stack sentenceFinder collection |
+	
+	stack := OOStack new push: 'winter is coming'; push: 'Winter is here'.
+
+	sentenceFinder := SentenceFinderByPrefix with: stack.
+	
+	collection := sentenceFinder find: 'Wint'.
+	
+	self assert: 1 equals: collection size.
+	self assert: collection includes: 'Winter is here'.
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'AS 11/4/2021 11:05:28'!
+test16WhenStackContainsMultipleRelatedStrings
 
 	 | stack sentenceFinder sentences expectedSentences |
 
@@ -376,18 +400,6 @@ test222XXX
     	sentences := sentenceFinder find: 'Wint'.
 
     	self assert: expectedSentences equals: sentences! !
-
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:44:45'!
-test333SentenceFinderByPrefixWhenFindStackIsNotModified
-
-	| stack sentenceFinder |
-
-	stack := OOStack new.
-	stack push: 'winter is coming'; push: 'winning is everything'; push: 'The winds of Winter'; push: 'Winter is here'.
-	
-	sentenceFinder := SentenceFinderByPrefix with: stack.
-	
-	sentenceFinder find: 'wint'! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
@@ -433,7 +445,7 @@ top
 	^stackState topFrom: self! !
 
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:42:44'!
+!OOStack methodsFor: 'private' stamp: 'AG 11/2/2021 13:42:44'!
 popAnElement
 
 	| item aSubclass |
@@ -443,19 +455,19 @@ popAnElement
 	self switchState: aSubclass new.
 	^ item! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:43:00'!
+!OOStack methodsFor: 'private' stamp: 'AG 11/2/2021 13:43:00'!
 pushElement: anElement
 
 	stackContent add: anElement.
 	self switchState: NonEmptyState new.
 	! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:43:14'!
+!OOStack methodsFor: 'private' stamp: 'AG 11/2/2021 13:43:14'!
 switchState: aNewStackState
 
 	stackState := aNewStackState! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:43:28'!
+!OOStack methodsFor: 'private' stamp: 'AG 11/2/2021 13:43:28'!
 viewTop
 
 	^ stackContent at: self size! !
@@ -479,42 +491,55 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AG 11/4/2021 03:08:56'!
-find: aPrefix
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'AS 11/4/2021 15:00:54'!
+findWithPrefix: aPrefix
 
 	| stackAux top |
-
+	
 	(self prefixIsValid: aPrefix) ifFalse: [^ self error: SentenceFinderByPrefix invalidPrefixErrorDescription].
 
 	stackAux := OOStack new.
-	self withTheStack: stack do: [ 
-		top := stack top.
-		((top findString: aPrefix startingAt: 1 caseSensitive: true) = 1) ifTrue:[
-			prefixes add: top]	]  usingTheAuxiliarStack: stackAux.
+	self popFromStack: stack evaluate:  
+	[ top := stack top. (self prefixIsFound: aPrefix inString: top) ifTrue: [prefixes add: top] 	]
+	pushToStack: stackAux.
 	
-	self withTheStack: stackAux do: [] usingTheAuxiliarStack: stack.
+	self popFromStack: stackAux evaluate: [] pushToStack: stack.
 
-	^ prefixes
 ! !
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AS 11/2/2021 19:47:57'!
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'AS 11/2/2021 19:47:57'!
 initalizeWith: aStack 
 	
 	stack := aStack.
 	prefixes := OrderedCollection new.! !
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 18:58:13'!
-prefixIsValid: aPrefix
-
-    ^(aPrefix size = 0 or: (aPrefix includesSubString: ' ')) not! !
-
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'AG 11/4/2021 03:06:01'!
-withTheStack: anOOStack do: aBlock usingTheAuxiliarStack: anAuxiliarOOStack
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'AS 11/4/2021 15:01:20'!
+popFromStack: anOOStack evaluate: aBlock pushToStack: anotherOOStack
 
 	[anOOStack isEmpty] whileFalse: [ 
 		aBlock value.
-		anAuxiliarOOStack push: anOOStack pop.
-	].! !
+		anotherOOStack push: anOOStack pop.
+	].
+
+! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'AS 11/4/2021 13:11:31'!
+prefixIsFound: aPrefix inString: aString
+
+    ^ (aString findString: aPrefix startingAt: 1 caseSensitive: true) = 1! !
+
+!SentenceFinderByPrefix methodsFor: 'private' stamp: 'AS 11/4/2021 13:25:46'!
+prefixIsValid: aPrefix
+
+    ^ (aPrefix size = 0 or: (aPrefix includesSubString: ' ')) not! !
+
+
+!SentenceFinderByPrefix methodsFor: 'finding' stamp: 'AS 11/4/2021 14:46:44'!
+find: aPrefix
+
+	self findWithPrefix: aPrefix.
+	^ prefixes
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -522,14 +547,19 @@ withTheStack: anOOStack do: aBlock usingTheAuxiliarStack: anAuxiliarOOStack
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
 
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:14:53'!
+!SentenceFinderByPrefix class methodsFor: 'error descriptions' stamp: 'AS 11/4/2021 10:52:04'!
+invalidInitialization
+	^ 'aStack has to be an instance of OOStack'! !
+
+!SentenceFinderByPrefix class methodsFor: 'error descriptions' stamp: 'AS 11/3/2021 19:14:53'!
 invalidPrefixErrorDescription
 	^ 'Prefix is invalid'! !
 
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 19:29:11'!
+
+!SentenceFinderByPrefix class methodsFor: 'class initialization' stamp: 'AS 11/4/2021 10:52:32'!
 with: aStack
 	
-	(aStack isKindOf: OOStack) ifFalse: [ self error: 'aStack has to be an instance of OOStack' ].
+	(aStack isKindOf: OOStack) ifFalse: [ self error: self invalidInitialization ].
 	
 	^self new initalizeWith: aStack! !
 
@@ -541,22 +571,25 @@ Object subclass: #StackState
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!StackState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:23'!
-isEmpty
-
-	^ self subclassResponsibility ! !
-
-!StackState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:28'!
+!StackState methodsFor: 'popping' stamp: 'AG 11/2/2021 13:41:28'!
 popFromStack: OOStack
 
 	^ self subclassResponsibility ! !
 
-!StackState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:33'!
+
+!StackState methodsFor: 'testing' stamp: 'AG 11/2/2021 13:41:23'!
+isEmpty
+
+	^ self subclassResponsibility ! !
+
+
+!StackState methodsFor: 'pushing' stamp: 'AG 11/2/2021 13:41:33'!
 push: aString toOOStack: anOOStack
 
 	^ self subclassResponsibility ! !
 
-!StackState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:37'!
+
+!StackState methodsFor: 'accesing' stamp: 'AG 11/2/2021 13:41:37'!
 topFrom: anOOStack
 
 	^ self subclassResponsibility ! !
@@ -567,7 +600,7 @@ topFrom: anOOStack
 StackState class
 	instanceVariableNames: ''!
 
-!StackState class methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:45:03'!
+!StackState class methodsFor: 'private' stamp: 'AG 11/2/2021 13:45:03'!
 canInstanciateWith: aSize
 
 	^ self subclassResponsibility ! !
@@ -580,25 +613,28 @@ StackState subclass: #EmptyState
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!EmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:42:01'!
-isEmpty
+!EmptyState methodsFor: 'accessing' stamp: 'AG 11/2/2021 13:42:12'!
+topFrom: anOOStack
 
-	^ true.! !
+	^ self error: OOStack stackEmptyErrorDescription! !
 
-!EmptyState methodsFor: 'as yet unclassified' stamp: 'AS 11/3/2021 18:57:12'!
+
+!EmptyState methodsFor: 'popping' stamp: 'AS 11/3/2021 18:57:12'!
 popFromStack: anOOStack
 
 	^ self error: OOStack stackEmptyErrorDescription ! !
 
-!EmptyState methodsFor: 'as yet unclassified' stamp: 'AA 11/2/2021 13:34:57'!
+
+!EmptyState methodsFor: 'pushing' stamp: 'AA 11/2/2021 13:34:57'!
 push: aString toOOStack: anOOStack
 
 	anOOStack pushElement: aString! !
 
-!EmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:42:12'!
-topFrom: anOOStack
 
-	^ self error: OOStack stackEmptyErrorDescription! !
+!EmptyState methodsFor: 'testing' stamp: 'AG 11/2/2021 13:42:01'!
+isEmpty
+
+	^ true.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -606,7 +642,7 @@ topFrom: anOOStack
 EmptyState class
 	instanceVariableNames: ''!
 
-!EmptyState class methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:43:52'!
+!EmptyState class methodsFor: 'private' stamp: 'AG 11/2/2021 13:43:52'!
 canInstanciateWith: aSize
 
 	^aSize = 0! !
@@ -619,24 +655,27 @@ StackState subclass: #NonEmptyState
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:52'!
+!NonEmptyState methodsFor: 'testing' stamp: 'AG 11/2/2021 13:41:52'!
 isEmpty
 
 	^ false! !
 
-!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:56'!
+
+!NonEmptyState methodsFor: 'popping' stamp: 'AG 11/2/2021 13:41:56'!
 popFromStack: OOStack	
 
 	^ OOStack popAnElement.
 	
 	! !
 
-!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:41:47'!
+
+!NonEmptyState methodsFor: 'pushing' stamp: 'AG 11/2/2021 13:41:47'!
 push: aString toOOStack: anOOStack
 
 	anOOStack pushElement: aString! !
 
-!NonEmptyState methodsFor: 'as yet unclassified' stamp: 'AA 11/2/2021 13:27:52'!
+
+!NonEmptyState methodsFor: 'accessing' stamp: 'AA 11/2/2021 13:27:52'!
 topFrom: OOStack
 
 	^ OOStack viewTop! !
@@ -647,7 +686,7 @@ topFrom: OOStack
 NonEmptyState class
 	instanceVariableNames: ''!
 
-!NonEmptyState class methodsFor: 'as yet unclassified' stamp: 'AG 11/2/2021 13:44:01'!
+!NonEmptyState class methodsFor: 'private' stamp: 'AG 11/2/2021 13:44:01'!
 canInstanciateWith: aSize
 
 	^aSize > 0! !
