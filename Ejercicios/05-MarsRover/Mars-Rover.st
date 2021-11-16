@@ -81,6 +81,130 @@ test06
 	
 	self assert: 'O' equals: puntoCardinalActual ! !
 
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 19:09:15'!
+test07
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: 'r'.
+	
+	puntoCardinalActual := marsRover darPuntoCardinal.
+	
+	self assert: 'E' equals: puntoCardinalActual ! !
+
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 19:11:54'!
+test08
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: 'lr'.
+	
+	puntoCardinalActual := marsRover darPuntoCardinal.
+	
+	self assert: 'N' equals: puntoCardinalActual ! !
+
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 19:45:01'!
+test09
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: 'rf'.
+	
+	puntoCardinalActual := marsRover darPuntoCardinal.
+	
+	self assert: 'E' equals: puntoCardinalActual.
+	self assert: (1@0) equals: marsRover darPosicionActual.! !
+
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 19:46:14'!
+test10
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: 'lf'.
+	
+	puntoCardinalActual := marsRover darPuntoCardinal.
+	
+	self assert: 'O' equals: puntoCardinalActual.
+	self assert: (-1@0) equals: marsRover darPosicionActual.! !
+
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 19:48:19'!
+test11
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: 'llf'.
+	
+	puntoCardinalActual := marsRover darPuntoCardinal.
+	
+	self assert: 'S' equals: puntoCardinalActual.
+	self assert: (0@-1) equals: marsRover darPosicionActual.! !
+
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 19:51:38'!
+test12
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: 'rb'.
+	
+	puntoCardinalActual := marsRover darPuntoCardinal.
+	
+	self assert: 'E' equals: puntoCardinalActual.
+	self assert: (-1@0) equals: marsRover darPosicionActual.! !
+
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 19:54:38'!
+test13
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: 'lb'.
+	
+	puntoCardinalActual := marsRover darPuntoCardinal.
+	
+	self assert: 'O' equals: puntoCardinalActual.
+	self assert: (1@0) equals: marsRover darPosicionActual.! !
+
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 19:55:59'!
+test14
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: 'llb'.
+	
+	puntoCardinalActual := marsRover darPuntoCardinal.
+	
+	self assert: 'S' equals: puntoCardinalActual.
+	self assert: (0@1) equals: marsRover darPosicionActual.! !
+
+!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 20:02:13'!
+test15
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: 'fffrff'.
+	
+	puntoCardinalActual := marsRover darPuntoCardinal.
+	
+	self assert: 'E' equals: puntoCardinalActual.
+	self assert: (2@3) equals: marsRover darPosicionActual.! !
+
 
 !classDefinition: #MarsRover category: 'Mars-Rover'!
 Object subclass: #MarsRover
@@ -104,11 +228,35 @@ initialize
 	posicionActual := (0@0).
 	puntoCardinalActual := 'N'! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/15/2021 14:03:49'!
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'AS 11/16/2021 19:56:19'!
 recibirComandos: sucesionDeComandos
 	
 	sucesionDeComandos do: [ :unComando |
-		(unComando = $f) ifTrue: [ posicionActual := posicionActual + (0@1)].
-		(unComando = $b) ifTrue: [ posicionActual := posicionActual - (0@1)].
-		(unComando = $l) ifTrue: [ puntoCardinalActual := 'O'].
-		].! !
+		(unComando = $f) ifTrue: [ (puntoCardinalActual = 'N') ifTrue: [ posicionActual := posicionActual + (0@1)].
+			(puntoCardinalActual = 'E') ifTrue: [posicionActual := posicionActual + (1@0)].
+			(puntoCardinalActual = 'O') ifTrue: [posicionActual := posicionActual - (1@0)].
+			(puntoCardinalActual = 'S') ifTrue: [posicionActual := posicionActual - (0@1)].
+			].
+		
+		
+		(unComando = $b) ifTrue: [ (puntoCardinalActual = 'N') ifTrue: [ posicionActual := posicionActual - (0@1)].
+			(puntoCardinalActual = 'E') ifTrue: [posicionActual := posicionActual - (1@0)].
+			(puntoCardinalActual = 'O') ifTrue: [posicionActual := posicionActual + (1@0)].
+			(puntoCardinalActual = 'S') ifTrue: [posicionActual := posicionActual + (0@1)].
+			].
+		
+		
+		(unComando = $l) ifTrue: [ 
+			(puntoCardinalActual = 'N') ifTrue:[puntoCardinalActual  := 'O']
+			ifFalse:[ (puntoCardinalActual = 'O') ifTrue: [puntoCardinalActual := 'S'] 
+			ifFalse:[(puntoCardinalActual = 'S') ifTrue: [puntoCardinalActual := 'E']
+			ifFalse: [puntoCardinalActual := 'N']]]
+			].
+			
+		(unComando = $r) ifTrue: [ 
+			(puntoCardinalActual = 'N') ifTrue:[puntoCardinalActual  := 'E']
+			ifFalse:[ (puntoCardinalActual = 'E') ifTrue: [puntoCardinalActual := 'S'] 
+			ifFalse:[(puntoCardinalActual = 'S') ifTrue: [puntoCardinalActual := 'O']
+			ifFalse: [puntoCardinalActual := 'N']]]
+			]
+		]! !
