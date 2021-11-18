@@ -5,193 +5,120 @@ TestCase subclass: #MarsRoverTest
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/16/2021 20:22:56'!
+!MarsRoverTest methodsFor: 'assertions' stamp: 'AS 11/18/2021 13:53:37'!
+acertarQueAlRecibirComandos: unosComandos elMarsRoverApuntaHaciaElPuntoCardinal: unaRepresentacionDePuntoCardinal
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: unosComandos.
+	
+	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
+	
+	self assert: unaRepresentacionDePuntoCardinal equals: puntoCardinalActual
+	! !
+
+!MarsRoverTest methodsFor: 'assertions' stamp: 'AS 11/18/2021 13:50:08'!
+acertarQueAlRecibirComandos: unosComandos elMarsRoverQuedaEnLaPosicion: unaPosicionDelPlano
+	| marsRover posicionActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: unosComandos.
+	
+	posicionActual := marsRover darPosicionActual.
+	self assert: unaPosicionDelPlano equals: posicionActual 
+	! !
+
+!MarsRoverTest methodsFor: 'assertions' stamp: 'AS 11/18/2021 13:59:07'!
+acertarQueAlRecibirComandos: unosComandos elMarsRoverQuedaEnLaPosicion: unaPosicion yApuntaAlPuntoCardinal: unaRespresentacionDePuntoCardinal
+
+	| marsRover puntoCardinalActual |
+	
+	marsRover := MarsRover new.
+	
+	marsRover recibirComandos: unosComandos .
+	
+	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
+	
+	self assert: unaRespresentacionDePuntoCardinal equals: puntoCardinalActual.
+	self assert: unaPosicion equals: marsRover darPosicionActual.! !
+
+
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 13:50:39'!
 test01ElMarsRoverNoRecibeComandosYSeQuedaEnSuLugar
 
-	| marsRover posicionActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: ''.
-	
-	posicionActual := marsRover darPosicionActual.
-	self assert: (0@0) equals: posicionActual ! !
+	self acertarQueAlRecibirComandos: '' elMarsRoverQuedaEnLaPosicion: (0@0) ! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/16/2021 20:28:18'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 13:51:06'!
 test02ElMarsRoverRecibeElComandoDeAvanzarYSeMueveHaciaAdelante
 
-	| marsRover posicionActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'f'.
-	
-	posicionActual := marsRover darPosicionActual.
-	self assert:  (0@1) equals: posicionActual ! !
+	self acertarQueAlRecibirComandos: 'f' elMarsRoverQuedaEnLaPosicion: (0@1)! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/16/2021 20:29:03'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 13:51:38'!
 test03ElMarsRoverRecibeElComandoDeRetrocederYSeMueveHaciaAtras
 
-	| marsRover posicionActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'b'.
-	
-	posicionActual := marsRover darPosicionActual.
-	self assert: (0@-1) equals: posicionActual 
+	self acertarQueAlRecibirComandos: 'b' elMarsRoverQuedaEnLaPosicion: (0@-1)
 	! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/16/2021 20:30:11'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 13:51:53'!
 test04ElMarsRoverRecibeElComandoDeAvanzarYRetrocederJuntosYTerminaEnElPuntoInicial
 
-	| marsRover posicionActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'fb'.
-	
-	posicionActual := marsRover darPosicionActual.
-	self assert: (0@0) equals: posicionActual 
-	! !
+	self acertarQueAlRecibirComandos: 'fb' elMarsRoverQuedaEnLaPosicion: (0@0)! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:35'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 13:54:10'!
 test05ElMarsRoverNoRecibeComandosYSigueApuntandoHaciaElNorte
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: ''.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'N' equals: puntoCardinalActual! !
+	self acertarQueAlRecibirComandos: '' elMarsRoverApuntaHaciaElPuntoCardinal: 'N'! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 13:54:32'!
 test06ElMarsRoverRecibeElComandoDeRotar90GradosALaIzquierdaYAhoraApuntaAlOeste
+	
+	self acertarQueAlRecibirComandos: 'l' elMarsRoverApuntaHaciaElPuntoCardinal: 'O'! !
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'l'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'O' equals: puntoCardinalActual ! !
-
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:35'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 13:54:47'!
 test07ElMarsRoverRecibeElComandoDeRotar90GradosALaDerechaYAhoraApuntaAlEste
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'r'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'E' equals: puntoCardinalActual ! !
+	self acertarQueAlRecibirComandos: 'r' elMarsRoverApuntaHaciaElPuntoCardinal: 'E'! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 13:55:01'!
 test08ElMarsRoverRotaHaciaLaIzquiedaYALaDerechaYVuelveAApuntarHaciaElNorte
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'lr'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'N' equals: puntoCardinalActual ! !
+	self acertarQueAlRecibirComandos: 'lr' elMarsRoverApuntaHaciaElPuntoCardinal: 'N'! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 13:59:32'!
 test09ElMarsRoverAvanzaHaciaElEsteCorrectamente
+	
+	self acertarQueAlRecibirComandos: 'rf' elMarsRoverQuedaEnLaPosicion: (1@0)  yApuntaAlPuntoCardinal: 'E'
+! !
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'rf'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'E' equals: puntoCardinalActual.
-	self assert: (1@0) equals: marsRover darPosicionActual.! !
-
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 14:00:04'!
 test10ElMarsRoverAvanzaHaciaElOesteCorrectamente
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'lf'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'O' equals: puntoCardinalActual.
-	self assert: (-1@0) equals: marsRover darPosicionActual.! !
+	self acertarQueAlRecibirComandos: 'lf' elMarsRoverQuedaEnLaPosicion: (-1@0)  yApuntaAlPuntoCardinal: 'O'! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 14:00:21'!
 test11ElMarsRoverAvanzaHaciaElSurCorrectamente
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'llf'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'S' equals: puntoCardinalActual.
-	self assert: (0@-1) equals: marsRover darPosicionActual.! !
+	self acertarQueAlRecibirComandos: 'llf' elMarsRoverQuedaEnLaPosicion: (0@-1)  yApuntaAlPuntoCardinal: 'S'! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 14:00:35'!
 test12ElMarsRoverRetrocedeViendoHaciaElEsteCorrectamente
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'rb'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'E' equals: puntoCardinalActual.
-	self assert: (-1@0) equals: marsRover darPosicionActual.! !
+	self acertarQueAlRecibirComandos: 'rb' elMarsRoverQuedaEnLaPosicion: (-1@0)  yApuntaAlPuntoCardinal: 'E'! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 14:00:52'!
 test13ElMarsRoverRetrocedeViendoHaciaElOesteCorrectamente
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'lb'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'O' equals: puntoCardinalActual.
-	self assert: (1@0) equals: marsRover darPosicionActual.! !
+	self acertarQueAlRecibirComandos: 'lb' elMarsRoverQuedaEnLaPosicion: (1@0)  yApuntaAlPuntoCardinal: 'O'! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:35'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 14:01:10'!
 test14ElMarsRoverRetrocedeViendoHaciaElSurCorrectamente
 
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'llb'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'S' equals: puntoCardinalActual.
-	self assert: (0@1) equals: marsRover darPosicionActual.! !
+	self acertarQueAlRecibirComandos: 'llb' elMarsRoverQuedaEnLaPosicion: (0@1)  yApuntaAlPuntoCardinal: 'S'! !
 
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:29:52'!
+!MarsRoverTest methodsFor: 'test' stamp: 'AS 11/18/2021 14:01:31'!
 test15ElMarsRoverRecibeUnComandoErroneo
 	
 	| marsRover |
@@ -199,24 +126,11 @@ test15ElMarsRoverRecibeUnComandoErroneo
 	marsRover := MarsRover new.
 	
 	self
-		should: [ marsRover recibirComandos: 'ffxf'. ]
+		should: [ MarsRover new recibirComandos: 'ffxf'. ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = MarsRover comandoNoSoportadoError]
 ! !
-
-!MarsRoverTest methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:29:02'!
-test999
-	| marsRover puntoCardinalActual |
-	
-	marsRover := MarsRover new.
-	
-	marsRover recibirComandos: 'ffffll'.
-	
-	puntoCardinalActual := marsRover darRepresentacionDePuntoCardinal.
-	
-	self assert: 'S' equals: puntoCardinalActual.
-	self assert: (0@4) equals: marsRover darPosicionActual.! !
 
 
 !classDefinition: #Comando category: 'Mars-Rover'!
@@ -226,7 +140,7 @@ Object subclass: #Comando
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!Comando methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:31:22'!
+!Comando methodsFor: 'indicaciones' stamp: 'AG 11/17/2021 20:31:22'!
 hacerActuarAlMarsRover: unMarsRover
 	
 	^self subclassResponsibility ! !
@@ -239,7 +153,7 @@ Comando subclass: #Avance
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!Avance methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:30:50'!
+!Avance methodsFor: 'indicaciones' stamp: 'AG 11/17/2021 20:30:50'!
 hacerActuarAlMarsRover: unMarsRover
 	
 	unMarsRover avanzar! !
@@ -252,7 +166,7 @@ Comando subclass: #GiroALaDerecha
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!GiroALaDerecha methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:30:50'!
+!GiroALaDerecha methodsFor: 'indicaciones' stamp: 'AG 11/17/2021 20:30:50'!
 hacerActuarAlMarsRover: unMarsRover
 
 	unMarsRover girarALaDerecha ! !
@@ -265,7 +179,7 @@ Comando subclass: #GiroALaIzquierda
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!GiroALaIzquierda methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:30:50'!
+!GiroALaIzquierda methodsFor: 'indicaciones' stamp: 'AG 11/17/2021 20:30:50'!
 hacerActuarAlMarsRover: unMarsRover
 
 	unMarsRover girarALaIzquierda ! !
@@ -278,7 +192,7 @@ Comando subclass: #Retroceso
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!Retroceso methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:30:50'!
+!Retroceso methodsFor: 'indicaciones' stamp: 'AG 11/17/2021 20:30:50'!
 hacerActuarAlMarsRover: unMarsRover
 
 	unMarsRover retroceder ! !
@@ -291,31 +205,7 @@ Object subclass: #MarsRover
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:02:14'!
-avanzar
-
-	posicionActual := puntoCardinalActual avanzarDesdeLaPosicion: posicionActual ! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/15/2021 13:21:04'!
-darPosicionActual
-
-	^posicionActual ! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:35'!
-darRepresentacionDePuntoCardinal
-	^puntoCardinalActual darRepresentacionDePuntoCardinal! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:48:39'!
-girarALaDerecha
-	
-	puntoCardinalActual := puntoCardinalActual girarALaDerecha.! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:49:13'!
-girarALaIzquierda
-
-	puntoCardinalActual := puntoCardinalActual girarALaIzquierda ! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:21:43'!
+!MarsRover methodsFor: 'initialization' stamp: 'AG 11/17/2021 20:21:43'!
 initialize
 	
 	posicionActual := (0@0).
@@ -323,7 +213,39 @@ initialize
 	comandosConocidos := Dictionary new.
 	comandosConocidos at: $f put: Avance new; at: $b put: Retroceso new; at: $l put: GiroALaIzquierda new; at: $r put: GiroALaDerecha new! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:30:51'!
+
+!MarsRover methodsFor: 'auxiliares - privado' stamp: 'AG 11/17/2021 20:25:09'!
+validarComando: unComando
+	comandosConocidos at: unComando ifAbsent: [^self error: MarsRover comandoNoSoportadoError ].! !
+
+
+!MarsRover methodsFor: 'testing' stamp: 'AG 11/15/2021 13:21:04'!
+darPosicionActual
+
+	^posicionActual ! !
+
+!MarsRover methodsFor: 'testing' stamp: 'AS 11/18/2021 13:42:22'!
+darRepresentacionDePuntoCardinal
+
+	^puntoCardinalActual darRepresentacionDePuntoCardinal! !
+
+
+!MarsRover methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:02:14'!
+avanzar
+
+	posicionActual := puntoCardinalActual avanzarDesdeLaPosicion: posicionActual ! !
+
+!MarsRover methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:48:39'!
+girarALaDerecha
+	
+	puntoCardinalActual := puntoCardinalActual girarALaDerecha.! !
+
+!MarsRover methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:49:13'!
+girarALaIzquierda
+
+	puntoCardinalActual := puntoCardinalActual girarALaIzquierda ! !
+
+!MarsRover methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:30:51'!
 recibirComandos: sucesionDeComandos
 	
 	sucesionDeComandos do: [ :unComando |
@@ -332,14 +254,10 @@ recibirComandos: sucesionDeComandos
 		(comandosConocidos at: unComando) hacerActuarAlMarsRover: self.
 		]! !
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:04:45'!
+!MarsRover methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:04:45'!
 retroceder
 
 	posicionActual := puntoCardinalActual retrocederDesdeLaPosicion: posicionActual ! !
-
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:25:09'!
-validarComando: unComando
-	comandosConocidos at: unComando ifAbsent: [^self error: MarsRover comandoNoSoportadoError ].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -360,14 +278,30 @@ Object subclass: #PuntoCardinal
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!PuntoCardinal methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:01:39'!
+!PuntoCardinal methodsFor: 'testing' stamp: 'AG 11/17/2021 20:31:59'!
+darRepresentacionDePuntoCardinal
+
+	^self subclassResponsibility ! !
+
+
+!PuntoCardinal methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:01:39'!
 avanzarDesdeLaPosicion: unaPosicion
 	
 	^self subclassResponsibility ! !
 
-!PuntoCardinal methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:31:59'!
-darRepresentacionDePuntoCardinal
+!PuntoCardinal methodsFor: 'acciones' stamp: 'AS 11/18/2021 13:43:17'!
+girarALaDerecha
 
+	^self subclassResponsibility ! !
+
+!PuntoCardinal methodsFor: 'acciones' stamp: 'AS 11/18/2021 13:43:21'!
+girarALaIzquierda
+
+	^self subclassResponsibility ! !
+
+!PuntoCardinal methodsFor: 'acciones' stamp: 'AS 11/18/2021 13:39:58'!
+retrocederDesdeLaPosicion: unaPosicion
+	
 	^self subclassResponsibility ! !
 
 
@@ -383,16 +317,19 @@ avanzarDesdeLaPosicion: unaPosicion
 
 	^unaPosicion + (1@0)! !
 
-!Este methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
+!Este methodsFor: 'as yet unclassified' stamp: 'AS 11/18/2021 14:02:33'!
 darRepresentacionDePuntoCardinal
+
 	^'E'! !
 
-!Este methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:46:46'!
+!Este methodsFor: 'as yet unclassified' stamp: 'AS 11/18/2021 14:02:37'!
 girarALaDerecha
+
 	^Sur new! !
 
-!Este methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:46:55'!
+!Este methodsFor: 'as yet unclassified' stamp: 'AS 11/18/2021 14:02:39'!
 girarALaIzquierda
+
 	^Norte new! !
 
 !Este methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:03:43'!
