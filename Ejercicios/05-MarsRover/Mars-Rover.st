@@ -312,27 +312,28 @@ PuntoCardinal subclass: #Este
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!Este methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:59:38'!
-avanzarDesdeLaPosicion: unaPosicion
-
-	^unaPosicion + (1@0)! !
-
-!Este methodsFor: 'as yet unclassified' stamp: 'AS 11/18/2021 14:02:33'!
+!Este methodsFor: 'testing' stamp: 'AS 11/18/2021 14:02:33'!
 darRepresentacionDePuntoCardinal
 
 	^'E'! !
 
-!Este methodsFor: 'as yet unclassified' stamp: 'AS 11/18/2021 14:02:37'!
+
+!Este methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:59:38'!
+avanzarDesdeLaPosicion: unaPosicion
+
+	^unaPosicion + (1@0)! !
+
+!Este methodsFor: 'acciones' stamp: 'AS 11/18/2021 14:02:37'!
 girarALaDerecha
 
 	^Sur new! !
 
-!Este methodsFor: 'as yet unclassified' stamp: 'AS 11/18/2021 14:02:39'!
+!Este methodsFor: 'acciones' stamp: 'AS 11/18/2021 14:02:39'!
 girarALaIzquierda
 
 	^Norte new! !
 
-!Este methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:03:43'!
+!Este methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:03:43'!
 retrocederDesdeLaPosicion: unaPosicion
 	
 	^unaPosicion - (1@0)! !
@@ -345,24 +346,25 @@ PuntoCardinal subclass: #Norte
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!Norte methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:58:54'!
+!Norte methodsFor: 'testing' stamp: 'AG 11/17/2021 19:56:34'!
+darRepresentacionDePuntoCardinal
+	^'N'! !
+
+
+!Norte methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:58:54'!
 avanzarDesdeLaPosicion: unaPosicion
 
 	^unaPosicion + (0@1)! !
 
-!Norte methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
-darRepresentacionDePuntoCardinal
-	^'N'! !
-
-!Norte methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:46:15'!
+!Norte methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:46:15'!
 girarALaDerecha
 	^Este new! !
 
-!Norte methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:46:36'!
+!Norte methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:46:36'!
 girarALaIzquierda
 	^Oeste new! !
 
-!Norte methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:03:28'!
+!Norte methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:03:28'!
 retrocederDesdeLaPosicion: unaPosicion
 	
 	^unaPosicion - (0@1)! !
@@ -375,24 +377,25 @@ PuntoCardinal subclass: #Oeste
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!Oeste methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:00:24'!
+!Oeste methodsFor: 'testing' stamp: 'AG 11/17/2021 19:56:34'!
+darRepresentacionDePuntoCardinal
+	^'O'! !
+
+
+!Oeste methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:00:24'!
 avanzarDesdeLaPosicion: unaPosicion
 
 	^unaPosicion - (1@0)! !
 
-!Oeste methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
-darRepresentacionDePuntoCardinal
-	^'O'! !
-
-!Oeste methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:47:11'!
+!Oeste methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:47:11'!
 girarALaDerecha
 	^Norte new! !
 
-!Oeste methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:47:21'!
+!Oeste methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:47:21'!
 girarALaIzquierda
 	^Sur new! !
 
-!Oeste methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:03:57'!
+!Oeste methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:03:57'!
 retrocederDesdeLaPosicion: unaPosicion
 	
 	^unaPosicion + (1@0)! !
@@ -405,24 +408,25 @@ PuntoCardinal subclass: #Sur
 	poolDictionaries: ''
 	category: 'Mars-Rover'!
 
-!Sur methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:00:46'!
+!Sur methodsFor: 'testing' stamp: 'AG 11/17/2021 19:56:34'!
+darRepresentacionDePuntoCardinal
+	^'S'! !
+
+
+!Sur methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:00:46'!
 avanzarDesdeLaPosicion: unaPosicion
 
 	^unaPosicion - (0@1)! !
 
-!Sur methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:56:34'!
-darRepresentacionDePuntoCardinal
-	^'S'! !
-
-!Sur methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:47:35'!
+!Sur methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:47:35'!
 girarALaDerecha
 	^Oeste new! !
 
-!Sur methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 19:47:44'!
+!Sur methodsFor: 'acciones' stamp: 'AG 11/17/2021 19:47:44'!
 girarALaIzquierda
 	^Este new! !
 
-!Sur methodsFor: 'as yet unclassified' stamp: 'AG 11/17/2021 20:04:12'!
+!Sur methodsFor: 'acciones' stamp: 'AG 11/17/2021 20:04:12'!
 retrocederDesdeLaPosicion: unaPosicion
 	
 	^unaPosicion + (0@1)! !
