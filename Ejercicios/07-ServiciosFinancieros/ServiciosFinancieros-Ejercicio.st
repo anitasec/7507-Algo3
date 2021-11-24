@@ -110,6 +110,48 @@ test01
 	self assert: destinationAccount balance equals: 100 * peso.
 ! !
 
+!TestXXX methodsFor: 'as yet unclassified' stamp: 'AS 11/24/2021 18:21:55'!
+test02
+
+	| originAccount destinationAccount transfer|
+	
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	
+	transfer := Transfer from: originAccount to: destinationAccount for: 0 * peso.
+	
+	self assert: (transfer XXXX: 0 * peso).
+	
+! !
+
+!TestXXX methodsFor: 'as yet unclassified' stamp: 'AS 11/24/2021 18:22:50'!
+test03
+
+	| originAccount destinationAccount transfer|
+	
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	
+	transfer := Transfer from: originAccount to: destinationAccount for: 100 * peso.
+	
+	self assert: (transfer XXXX: 100 * peso).
+	
+! !
+
+!TestXXX methodsFor: 'as yet unclassified' stamp: 'AS 11/24/2021 18:38:21'!
+test04Patas
+
+	| originAccount destinationAccount transfer|
+	
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	
+	transfer := Transfer from: originAccount to: destinationAccount for: 100 * peso.
+	
+	self assert: (transfer YYYY: 100 * peso).
+	
+! !
+
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #AccountTransaction
@@ -254,10 +296,18 @@ transactions
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Transfer
-	instanceVariableNames: ''
+	instanceVariableNames: 'amount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Transfer methodsFor: 'testing' stamp: 'AS 11/24/2021 18:28:03'!
+XXXX: aValue
+	^aValue = amount! !
+
+!Transfer methodsFor: 'testing' stamp: 'AS 11/24/2021 18:27:29'!
+initializeWith: aValue
+	amount := aValue! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -265,11 +315,12 @@ Object subclass: #Transfer
 Transfer class
 	instanceVariableNames: ''!
 
-!Transfer class methodsFor: 'initialization' stamp: 'AG 11/20/2021 04:38:55'!
+!Transfer class methodsFor: 'initialization' stamp: 'AS 11/24/2021 18:28:41'!
 from: anOriginAccount to: aDestinationAccount for: anAmountToTransfer 
 
 	| transfer |
 	transfer := self new.
+	transfer initializeWith: anAmountToTransfer .
 	
 	Deposit register: anAmountToTransfer on: aDestinationAccount.
 	Withdraw register: anAmountToTransfer on: anOriginAccount.
