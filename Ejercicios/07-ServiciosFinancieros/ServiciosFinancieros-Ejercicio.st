@@ -5,17 +5,17 @@ TestCase subclass: #ReceptiveAccountTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'AG 11/25/2021 20:58:38'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'AG 11/26/2021 13:51:38'!
 test01ReceptiveAccountHaveZeroAsBalanceWhenCreated 
 
 	| account |
 	
 	account := ReceptiveAccount new.
 
-	self assert: 0 equals: account balanceOfPortfolio
+	self assert: 0 equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'AG 11/25/2021 20:58:38'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'AG 11/26/2021 13:51:38'!
 test02DepositIncreasesBalanceOnTransactionValue 
 
 	| account |
@@ -23,10 +23,10 @@ test02DepositIncreasesBalanceOnTransactionValue
 	account := ReceptiveAccount  new.
 	Deposit register: 100 * peso on: account.
 		
-	self assert: 100 * peso equals: account balanceOfPortfolio
+	self assert: 100 * peso equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'AG 11/25/2021 20:58:38'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'AG 11/26/2021 13:51:38'!
 test03WithdrawDecreasesBalanceOnTransactionValue 
 
 	| account |
@@ -35,7 +35,7 @@ test03WithdrawDecreasesBalanceOnTransactionValue
 	Deposit register: 100 * peso on: account.
 	Withdraw register: 50 * peso on: account.
 		
-	self assert: 50 * peso equals: account balanceOfPortfolio
+	self assert: 50 * peso equals: account balance
 ! !
 
 !ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:14'!
@@ -96,61 +96,68 @@ TestCase subclass: #TestPortfolio
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/25/2021 20:58:38'!
+!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 13:54:57'!
 test01
 	
-	| portfolio account1 account2 accounts|
+	| portfolio |
+
+	portfolio := Portfolio new.
 	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	
-	accounts := OrderedCollection new.
-	accounts add: account1; add: account2.
-	
-	portfolio := Portfolio with: accounts.
-	
-	self assert: portfolio balanceOfPortfolio equals: 0 * peso.
+	self assert: portfolio balance equals: 0 * peso.
 	! !
 
-!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/25/2021 20:58:38'!
+!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 13:54:57'!
 test02
 	
-	| portfolio account1 account2 accounts |
+	| portfolio account |
+	
+	account := ReceptiveAccount new.
+	
+	Deposit register: 100 * peso on: account.
+	
+	portfolio := Portfolio new.
+
+	portfolio addAccount: account.
+	
+	self assert: portfolio balance equals: 100 * peso.! !
+
+!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 13:54:57'!
+test03
+	
+	| portfolio account1 account2 |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
 	
 	Deposit register: 100 * peso on: account1.
-	Deposit register: 50 * peso on: account2.
+	Deposit register: 200 * peso on: account2.
 	
-	accounts := OrderedCollection new.
-	accounts add: account1; add: account2.
-	
-	portfolio := Portfolio with: accounts.
-	
-	self assert: portfolio balanceOfPortfolio equals: 150 * peso.! !
+	portfolio := Portfolio new.
 
-!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/25/2021 20:44:06'!
-test03
+	portfolio addAccount: account1.
+	portfolio addAccount: account2.
+	
+	self assert: portfolio balance equals: 300 * peso.! !
 
-	| portfolio account1 account2 accounts withdraw |
+!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 03:37:21'!
+test04
+
+	| portfolio account withdraw |
 	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
+	account := ReceptiveAccount new.
 	
-	withdraw := Withdraw register: 50 * peso on: account2.
+	withdraw := Withdraw register: 50 * peso on: account.
 	
-	accounts := OrderedCollection new.
-	accounts add: account1; add: account2.
-	
-	portfolio := Portfolio with: accounts.
+	portfolio := Portfolio new.
+
+	portfolio addAccount: account.
 	
 	self assert: (portfolio hasRegisteredTransaction: withdraw).! !
 
-!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/25/2021 20:47:05'!
-test04
+!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 03:40:03'!
+test05
 
-	| portfolio account1 account2 accounts withdraw deposit |
+	| portfolio account1 account2 withdraw deposit |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
@@ -158,31 +165,70 @@ test04
 	deposit := Deposit register: 100 * peso on: account1.
 	withdraw := Withdraw register: 50 * peso on: account2.
 	
-	accounts := OrderedCollection new.
-	accounts add: account1.
-	
-	portfolio := Portfolio with: accounts.
+	portfolio := Portfolio new.
+
+	portfolio addAccount: account1..
 	
 	self deny: (portfolio hasRegisteredTransaction: withdraw).! !
 
-!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/25/2021 21:05:04'!
-test05
+!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 13:21:17'!
+test06
 
-	| portfolio account1 accounts listOfTransactions deposit |
+	| portfolio account listOfTransactions |
+	
+	account := ReceptiveAccount new.
+	
+	portfolio := Portfolio new.
+
+	portfolio addAccount: account.
+	
+	listOfTransactions := portfolio retrieveTransactionsOfAccount: account.
+	
+	self assert: listOfTransactions isEmpty
+	! !
+
+!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 13:44:18'!
+test07
+
+	| portfolio account listOfTransactions account1 account2 deposit withdraw transactions withdraw2 |
+	
+	account := ReceptiveAccount new.
 	
 	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
 	
 	deposit := Deposit register: 100 * peso on: account1.
+	withdraw := Withdraw register: 50 * peso on: account2.
+	withdraw2 := Withdraw register: 10 * peso on: account2.
+		
+	transactions := OrderedCollection new.
+	transactions add: deposit.
+	transactions add: withdraw.
+	transactions add: withdraw2.
+		
+	portfolio := Portfolio new.
+
+	portfolio addAccount: account1.
+	portfolio addAccount: account2.
+
+	listOfTransactions := portfolio retrieveTransactionsOfAccount: account.
+	self assert: listOfTransactions equals: transactions ! !
+
+!TestPortfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 14:00:30'!
+test08balance
 	
-	accounts := OrderedCollection new.
-	accounts add: account1.
+	| portfolio anotherPortfolio account |
 	
-	portfolio := Portfolio with: accounts.
+	portfolio := Portfolio new.
+	anotherPortfolio := Portfolio new.
+	account := ReceptiveAccount new.
 	
-	listOfTransactions := portfolio retrieveTransactionsOfAccount: account1.
+	Deposit register: 100 * peso on: account.
+		
+	anotherPortfolio addAccount: account.	
+	portfolio addAccount: anotherPortfolio.
 	
-	self assert: listOfTransactions first equals: deposit.
-	! !
+	self assert: portfolio balance equals: 100 * peso.! !
 
 
 !classDefinition: #TestTransfer category: 'ServiciosFinancieros-Ejercicio'!
@@ -192,7 +238,7 @@ TestCase subclass: #TestTransfer
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TestTransfer methodsFor: 'as yet unclassified' stamp: 'AG 11/25/2021 20:58:38'!
+!TestTransfer methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 13:51:38'!
 test01
 
 	| originAccount destinationAccount |
@@ -202,8 +248,8 @@ test01
 	
 	Transfer from: originAccount to: destinationAccount for: 100 * peso.
 	
-	self assert: originAccount balanceOfPortfolio equals: -100 * peso.
-	self assert: destinationAccount balanceOfPortfolio equals: 100 * peso.
+	self assert: originAccount balance equals: -100 * peso.
+	self assert: destinationAccount balance equals: 100 * peso.
 ! !
 
 !TestTransfer methodsFor: 'as yet unclassified' stamp: 'AS 11/24/2021 18:21:55'!
@@ -361,10 +407,15 @@ Object subclass: #Portfolio
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/25/2021 20:58:38'!
-balanceOfPortfolio
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 03:22:43'!
+addAccount: aReceptiveAccount 
 
-	^listOfAccounts sum: [ :anAccount | anAccount balanceOfPortfolio ] ifEmpty: [ 0 ]! !
+	listOfAccounts add: aReceptiveAccount ! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 13:54:57'!
+balance
+
+	^listOfAccounts sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 ]! !
 
 !Portfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/25/2021 20:55:16'!
 hasRegisteredTransaction: aTransaction 
@@ -372,31 +423,20 @@ hasRegisteredTransaction: aTransaction
 	listOfAccounts do: [ :anAccount | (anAccount hasRegistered: aTransaction) ifTrue: [^true]].
 	^false! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/25/2021 20:25:59'!
-initializeWith: multipleAccounts
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'AG 11/26/2021 03:22:53'!
+initialize
 
-	listOfAccounts := multipleAccounts.! !
+	listOfAccounts := OrderedCollection new.! !
 
 
-!Portfolio methodsFor: 'accesing' stamp: 'AG 11/25/2021 21:07:28'!
+!Portfolio methodsFor: 'accesing' stamp: 'AG 11/26/2021 13:39:43'!
 retrieveTransactionsOfAccount: aReceptiveAccount 
-	| account |
-	account := listOfAccounts detect: [:anAccount | anAccount = aReceptiveAccount ].
-	^account transactions ! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
-Portfolio class
-	instanceVariableNames: ''!
-
-!Portfolio class methodsFor: 'initialization' stamp: 'AG 11/25/2021 20:25:33'!
-with: multipleAccounts 
-	
-	^self new initializeWith: multipleAccounts
-	 
+	| totalOfTransactions |
+	totalOfTransactions := OrderedCollection new.
+	listOfAccounts do: [:anAccount | totalOfTransactions addAllLast: (anAccount transactions) ].
+	^totalOfTransactions 
 	! !
-
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -412,8 +452,8 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'AG 11/25/2021 20:58:38'!
-balanceOfPortfolio
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'AG 11/26/2021 13:51:00'!
+balance
 
 	^transactions sum: [ :aTransaction | aTransaction valueForBalance ] ifEmpty: [ 0 ]! !
 
