@@ -121,8 +121,8 @@ test02PortfolioWithAccountWithADepositOf100PesoShouldReturnBalanceOf100peso
 	
 	self assert: portfolio balance equals: 100 * peso.! !
 
-!TestPortfolio methodsFor: 'tests' stamp: 'AS 11/28/2021 16:42:31'!
-test03PorfolioWithTwoAcountsWithOneDepositEachShouldHaveTheSumAsBalance
+!TestPortfolio methodsFor: 'tests' stamp: 'AG 11/28/2021 19:59:48'!
+test03PorfolioWithTwoAccountsWithOneDepositEachShouldHaveTheSumAsBalance
 	
 	| portfolio account1 account2 |
 	
@@ -139,8 +139,8 @@ test03PorfolioWithTwoAcountsWithOneDepositEachShouldHaveTheSumAsBalance
 	
 	self assert: portfolio balance equals: 300 * peso.! !
 
-!TestPortfolio methodsFor: 'tests' stamp: 'AS 11/28/2021 16:43:32'!
-test04PorforlioWithAnAcountWithWithdrawShouldRegisterWithdrawTransaction
+!TestPortfolio methodsFor: 'tests' stamp: 'AG 11/28/2021 20:00:08'!
+test04PorforlioWithAnAccountWithWithdrawShouldRegisterWithdrawTransaction
 
 	| portfolio account withdraw |
 	
@@ -154,22 +154,21 @@ test04PorforlioWithAnAcountWithWithdrawShouldRegisterWithdrawTransaction
 	
 	self assert: (portfolio hasRegistered: withdraw).! !
 
-!TestPortfolio methodsFor: 'tests' stamp: 'AS 11/28/2021 16:45:00'!
-test05PortfolioWithTwoAccountsShouldRegisterWithdrawTransaction
+!TestPortfolio methodsFor: 'tests' stamp: 'AG 11/29/2021 03:37:24'!
+test05PortfolioHasNoAccountWithTheSearchedRegisteredTransaction
 
-	| portfolio account1 account2 withdraw |
+	| portfolio account1 account2 deposit |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
 	
-	Deposit register: 100 * peso on: account1.
-	withdraw := Withdraw register: 50 * peso on: account2.
+	deposit := Deposit register: 100 * peso on: account2.
 	
 	portfolio := Portfolio new.
 
 	portfolio addAccount: account1.
 	
-	self deny: (portfolio hasRegistered: withdraw).! !
+	self deny: (portfolio hasRegistered: deposit ).! !
 
 !TestPortfolio methodsFor: 'tests' stamp: 'AS 11/28/2021 16:45:56'!
 test06PorfolioWithAnAccountWithNoTransactionsShouldNotHaveTransactions
@@ -187,27 +186,21 @@ test06PorfolioWithAnAccountWithNoTransactionsShouldNotHaveTransactions
 	self assert: listOfTransactions isEmpty
 	! !
 
-!TestPortfolio methodsFor: 'tests' stamp: 'AS 11/28/2021 16:46:41'!
-test07PortfolioWithTwoAccountsWithTransactionsShouldHaveTransactions
+!TestPortfolio methodsFor: 'tests' stamp: 'AG 11/29/2021 03:46:13'!
+test07PortfolioWithAccountsWithTransactionShouldHaveTheSameTransactions
 
-	| portfolio listOfTransactions account1 account2 deposit withdraw transactions withdraw2 |
+	| portfolio listOfTransactions account deposit transactions |
 	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
+	account := ReceptiveAccount new.
 	
-	deposit := Deposit register: 100 * peso on: account1.
-	withdraw := Withdraw register: 50 * peso on: account2.
-	withdraw2 := Withdraw register: 10 * peso on: account2.
+	deposit := Deposit register: 100 * peso on: account.
 		
 	transactions := OrderedCollection new.
 	transactions add: deposit.
-	transactions add: withdraw.
-	transactions add: withdraw2.
 		
 	portfolio := Portfolio new.
 
-	portfolio addAccount: account1.
-	portfolio addAccount: account2.
+	portfolio addAccount: account.
 
 	listOfTransactions := portfolio transactions.
 	self assert: listOfTransactions equals: transactions ! !
@@ -300,37 +293,46 @@ test02TransferOfAnAmountBetweenAccountsShouldRegisterTheSameAmount
 	
 ! !
 
-!TestTransfer methodsFor: 'tests' stamp: 'AS 11/28/2021 17:56:54'!
-test04TransferWithdrawLegKnowsItsDepositLeg
+!TestTransfer methodsFor: 'tests' stamp: 'AG 11/28/2021 19:42:59'!
+test03ZeroPesoTransferShouldReturnInvalidTransferError
 
-	| originAccount destinationAccount transfer withdrawLeg depositLeg |
+	self assertThatTransferAmountIsInvalidTransferErrorForAmount: 0 * peso
+	
+! !
+
+!TestTransfer methodsFor: 'tests' stamp: 'AG 11/28/2021 19:43:29'!
+test04NegativeTransferShouldReturnInvalidTransferError
+
+	self assertThatTransferAmountIsInvalidTransferErrorForAmount: -5 * peso
+	
+! !
+
+!TestTransfer methodsFor: 'tests' stamp: 'AG 11/29/2021 11:03:53'!
+test05TransferWithdrawLegKnowsItsDepositLeg
+
+	| originAccount destinationAccount transfer |
 	
 	originAccount := ReceptiveAccount new.
 	destinationAccount := ReceptiveAccount new.
 	
 	transfer := Transfer from: originAccount to: destinationAccount for: 100 * peso.
 	
-	withdrawLeg := transfer getWithdrawLeg.
-	
-	depositLeg := withdrawLeg getDepositLeg. 
-	
-	self assert: transfer getDepositLeg equals: depositLeg.
+	self assertTheLeg: (transfer getDepositLeg) knowsItsCounterpart: (transfer getWithdrawLeg)
 	
 ! !
 
-!TestTransfer methodsFor: 'tests' stamp: 'AS 11/28/2021 18:03:11'!
-test05ZeroPesoTransferShouldReturnInvalidTransferError
+!TestTransfer methodsFor: 'tests' stamp: 'AG 11/29/2021 11:03:53'!
+test06TransferDepositLegKnowsItsWithdrawLeg
 
-	self assertThatTransferAmountIsInvalidTransferErrorForAmount: 0 * peso
+	| originAccount destinationAccount transfer |
 	
-! !
-
-!TestTransfer methodsFor: 'tests' stamp: 'AS 11/28/2021 18:03:24'!
-test06NegativeTransferShouldReturnInvalidTransferError
-
-	self assertThatTransferAmountIsInvalidTransferErrorForAmount: -5 * peso
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
 	
-! !
+	transfer := Transfer from: originAccount to: destinationAccount for: 100 * peso.
+	
+	self assertTheLeg: (transfer getWithdrawLeg) knowsItsCounterpart: (transfer getDepositLeg )
+	! !
 
 
 !TestTransfer methodsFor: 'auxiliary' stamp: 'AS 11/28/2021 18:02:51'!
@@ -349,6 +351,12 @@ assertThatTransferAmountIsInvalidTransferErrorForAmount: anAmount
 	
 ! !
 
+!TestTransfer methodsFor: 'auxiliary' stamp: 'AG 11/29/2021 10:40:55'!
+assertTheLeg: aLeg knowsItsCounterpart: anotherLeg
+			
+	self assert: anotherLeg equals: aLeg counterpart.
+	! !
+
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #AccountTransaction
@@ -357,24 +365,19 @@ Object subclass: #AccountTransaction
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
+!AccountTransaction methodsFor: 'value' stamp: 'AG 11/29/2021 14:04:57'!
+affectBalance: aBalance
+	
+	^ self subclassResponsibility ! !
+
 !AccountTransaction methodsFor: 'value' stamp: 'AS 11/28/2021 16:48:21'!
 value 
 
 	^ self subclassResponsibility ! !
 
-!AccountTransaction methodsFor: 'value' stamp: 'AG 11/19/2021 19:52:30'!
-valueForBalance
-	
-	^ self subclassResponsibility ! !
-
 
 !AccountTransaction methodsFor: 'initialization' stamp: 'AS 11/28/2021 18:06:35'!
 initializeFor: aValue
-
-	^ self subclassResponsibility ! !
-
-!AccountTransaction methodsFor: 'initialization' stamp: 'AS 11/28/2021 18:06:58'!
-initializeWith: aTransfer
 
 	^ self subclassResponsibility ! !
 
@@ -408,14 +411,15 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Deposit methodsFor: 'value' stamp: 'AG 11/29/2021 13:58:15'!
+affectBalance: aBalance
+	
+	aBalance increaseValue: self value! !
+
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
 	^ value! !
-
-!Deposit methodsFor: 'value' stamp: 'AG 11/19/2021 19:52:30'!
-valueForBalance
-	^ self value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -431,19 +435,32 @@ for: aValue
 
 !classDefinition: #DepositLeg category: 'ServiciosFinancieros-Ejercicio'!
 AccountTransaction subclass: #DepositLeg
-	instanceVariableNames: 'transfer'
+	instanceVariableNames: 'transfer value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!DepositLeg methodsFor: 'initialization' stamp: 'AS 11/27/2021 14:30:54'!
-initializeWith: aTransfer
+!DepositLeg methodsFor: 'initialization' stamp: 'AG 11/29/2021 10:42:38'!
+initializeFor: aValue with: aTransfer
+	
+	value := aValue.
 	transfer := aTransfer ! !
 
 
-!DepositLeg methodsFor: 'accessing' stamp: 'AS 11/27/2021 14:19:44'!
-getWithdrawLeg
-	^ transfer getWithdrawLeg.! !
+!DepositLeg methodsFor: 'accessing' stamp: 'AG 11/29/2021 02:24:54'!
+counterpart
+	^ transfer getWithdrawLeg .! !
+
+
+!DepositLeg methodsFor: 'value' stamp: 'AG 11/29/2021 14:03:03'!
+affectBalance: aBalance
+	
+	aBalance increaseValue: self value! !
+
+!DepositLeg methodsFor: 'value' stamp: 'AG 11/29/2021 10:46:28'!
+value
+
+	^ value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -451,11 +468,20 @@ getWithdrawLeg
 DepositLeg class
 	instanceVariableNames: ''!
 
-!DepositLeg class methodsFor: 'instance creation' stamp: 'AS 11/27/2021 14:21:50'!
-with: aTransfer
+!DepositLeg class methodsFor: 'instance creation' stamp: 'AG 11/29/2021 10:41:54'!
+for: aValue with: aTransfer
+
+	^ self new initializeFor: aValue with: aTransfer! !
+
+!DepositLeg class methodsFor: 'instance creation' stamp: 'AG 11/29/2021 04:22:28'!
+register: aValue on: account from: aTransfer
+
+	| transaction |
 	
-	^ self new initializeWith: aTransfer
-	! !
+	transaction := self for: aValue with: aTransfer.
+	account register: transaction.
+		
+	^ transaction! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
@@ -471,14 +497,15 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Withdraw methodsFor: 'value' stamp: 'AG 11/29/2021 14:01:30'!
+affectBalance: aBalance
+
+	aBalance decreaseValue: self value! !
+
 !Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
 value
 
 	^ value! !
-
-!Withdraw methodsFor: 'value' stamp: 'AG 11/19/2021 19:52:31'!
-valueForBalance
-	^ 0 * peso - self value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -494,21 +521,33 @@ for: aValue
 
 !classDefinition: #WithdrawLeg category: 'ServiciosFinancieros-Ejercicio'!
 AccountTransaction subclass: #WithdrawLeg
-	instanceVariableNames: 'transfer'
+	instanceVariableNames: 'transfer value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!WithdrawLeg methodsFor: 'initialization' stamp: 'AS 11/28/2021 18:06:10'!
-initializeWith: aTransfer
 
-	transfer := aTransfer ! !
-
-
-!WithdrawLeg methodsFor: 'accessing' stamp: 'AS 11/28/2021 18:04:06'!
-getDepositLeg
+!WithdrawLeg methodsFor: 'accessing' stamp: 'AG 11/29/2021 11:03:53'!
+counterpart
 
 	^transfer getDepositLeg ! !
+
+
+!WithdrawLeg methodsFor: 'value' stamp: 'AG 11/29/2021 14:03:12'!
+affectBalance: aBalance
+	
+	aBalance decreaseValue: self value! !
+
+!WithdrawLeg methodsFor: 'value' stamp: 'AG 11/29/2021 10:42:54'!
+initializeFor: aValue with: aTransfer
+	
+	value := aValue.
+	transfer := aTransfer ! !
+
+!WithdrawLeg methodsFor: 'value' stamp: 'AG 11/29/2021 10:46:35'!
+value
+
+	^ value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -516,14 +555,78 @@ getDepositLeg
 WithdrawLeg class
 	instanceVariableNames: ''!
 
-!WithdrawLeg class methodsFor: 'instance creation' stamp: 'AS 11/27/2021 14:22:38'!
-with: aTransfer
+!WithdrawLeg class methodsFor: 'instance creation' stamp: 'AG 11/29/2021 10:43:27'!
+for: aValue with: aTransfer
+
+	^ self new initializeFor: aValue with: aTransfer! !
+
+!WithdrawLeg class methodsFor: 'instance creation' stamp: 'AG 11/29/2021 04:22:57'!
+register: aValue on: account from: aTransfer
+
+	| transaction |
 	
-	^ self new initializeWith: aTransfer! !
+	transaction := self for: aValue with: aTransfer.
+	account register: transaction.
+		
+	^ transaction! !
+
+
+!classDefinition: #Balance category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Balance
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Balance methodsFor: 'accessing' stamp: 'AG 11/29/2021 13:59:41'!
+totalValue
+	
+	^value! !
+
+
+!Balance methodsFor: 'initialization' stamp: 'AG 11/29/2021 13:47:03'!
+initialize
+
+	value := 0*peso! !
+
+
+!Balance methodsFor: 'main protocol' stamp: 'AG 11/29/2021 14:01:30'!
+decreaseValue: aValue
+
+	value := value - aValue! !
+
+!Balance methodsFor: 'main protocol' stamp: 'AG 11/29/2021 14:01:16'!
+increaseValue: aValue
+
+	value := value + aValue! !
+
+
+!classDefinition: #BankAccount category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #BankAccount
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!BankAccount methodsFor: 'accessing' stamp: 'AG 11/28/2021 20:35:00'!
+transactions
+
+	^ self subclassResponsibility ! !
+
+
+!BankAccount methodsFor: 'main protocol' stamp: 'AG 11/28/2021 20:35:38'!
+balance
+
+	^ self subclassResponsibility ! !
+
+!BankAccount methodsFor: 'main protocol' stamp: 'AG 11/28/2021 20:35:13'!
+hasRegistered
+
+	^ self subclassResponsibility ! !
 
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
-Object subclass: #Portfolio
+BankAccount subclass: #Portfolio
 	instanceVariableNames: 'listOfAccounts'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -539,16 +642,10 @@ balance
 
 	^listOfAccounts sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 ]! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'AS 11/27/2021 13:43:00'!
+!Portfolio methodsFor: 'main protocol' stamp: 'AG 11/29/2021 11:13:12'!
 hasRegistered: aTransaction 
 
-	listOfAccounts do: [ :anAccount | (anAccount hasRegistered: aTransaction) ifTrue: [^true]].
-	^false! !
-
-!Portfolio methodsFor: 'main protocol' stamp: 'AG 11/26/2021 03:22:53'!
-initialize
-
-	listOfAccounts := OrderedCollection new.! !
+	^listOfAccounts anySatisfy: [ :anAccount | anAccount hasRegistered: aTransaction]! !
 
 
 !Portfolio methodsFor: 'accesing' stamp: 'AS 11/27/2021 13:59:48'!
@@ -560,24 +657,31 @@ transactions
 	^totalOfTransactions 
 	! !
 
+
+!Portfolio methodsFor: 'initialization' stamp: 'AG 11/26/2021 03:22:53'!
+initialize
+
+	listOfAccounts := OrderedCollection new.! !
+
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
-Object subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions'
+BankAccount subclass: #ReceptiveAccount
+	instanceVariableNames: 'transactions balance'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!ReceptiveAccount methodsFor: 'initialization' stamp: 'NR 10/17/2019 15:06:56'!
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'AG 11/29/2021 13:45:44'!
 initialize
 
-	transactions := OrderedCollection new.! !
+	transactions := OrderedCollection new.
+	balance := Balance new! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'AG 11/26/2021 13:51:00'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'AG 11/29/2021 14:00:39'!
 balance
 
-	^transactions sum: [ :aTransaction | aTransaction valueForBalance ] ifEmpty: [ 0 ]! !
+	^balance totalValue ! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
@@ -585,13 +689,15 @@ hasRegistered: aTransaction
 	^ transactions includes: aTransaction 
 ! !
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'AG 11/29/2021 14:02:21'!
 register: aTransaction
 
-	transactions add: aTransaction 
+	transactions add: aTransaction.
+	aTransaction affectBalance: balance
 ! !
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
+
+!ReceptiveAccount methodsFor: 'accesing' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 transactions 
 
 	^ transactions copy! !
@@ -604,27 +710,24 @@ Object subclass: #Transfer
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Transfer methodsFor: 'testing' stamp: 'AS 11/28/2021 16:39:18'!
-amount
-	^amount! !
-
-!Transfer methodsFor: 'testing' stamp: 'AS 11/28/2021 16:39:41'!
+!Transfer methodsFor: 'testing' stamp: 'AG 11/29/2021 11:02:43'!
 isOfAmount: aValue
-	^self amount = aValue! !
+
+	^amount = aValue! !
 
 
-!Transfer methodsFor: 'initialization' stamp: 'AS 11/27/2021 14:27:10'!
-initializeWith: aValue
-	amount := aValue.
-	
-	depositLeg := DepositLeg with: self.
-	withdrawLeg := WithdrawLeg with: self.! !
+!Transfer methodsFor: 'initialization' stamp: 'AG 11/29/2021 10:44:43'!
+initializeWithTheDepositLeg: aDepositLeg andTheWithdrawLeg: aWithdrawLeg for: anAmountToTransfer 
+
+	amount := anAmountToTransfer .
+	depositLeg := aDepositLeg .
+	withdrawLeg := aWithdrawLeg .! !
 
 
-!Transfer methodsFor: 'transferLegs' stamp: 'AS 11/28/2021 18:05:45'!
+!Transfer methodsFor: 'transferLegs' stamp: 'AG 11/29/2021 11:03:53'!
 getDepositLeg
 
-	^ depositLeg! !
+	^depositLeg! !
 
 !Transfer methodsFor: 'transferLegs' stamp: 'AS 11/28/2021 18:05:43'!
 getWithdrawLeg
@@ -643,17 +746,18 @@ invalidTransferError
 	^ 'Transfer must be greater than 0'! !
 
 
-!Transfer class methodsFor: 'initialization' stamp: 'AS 11/27/2021 14:42:05'!
+!Transfer class methodsFor: 'initialization' stamp: 'AG 11/29/2021 10:50:03'!
 from: anOriginAccount to: aDestinationAccount for: anAmountToTransfer 
 
-	| transfer |
+	| transfer aDepositLeg aWithdrawLeg |
 	
 	(anAmountToTransfer <= (0 * peso)) ifTrue: [^self error: Transfer invalidTransferError ].
 		
 	transfer := self new.
-	transfer initializeWith: anAmountToTransfer .
 	
-	Deposit register: anAmountToTransfer on: aDestinationAccount.
-	Withdraw register: anAmountToTransfer on: anOriginAccount.
+	aDepositLeg := DepositLeg register: anAmountToTransfer on: aDestinationAccount from: transfer.
+	aWithdrawLeg := WithdrawLeg register: anAmountToTransfer on: anOriginAccount from: transfer.
+	
+	transfer initializeWithTheDepositLeg: aDepositLeg andTheWithdrawLeg: aWithdrawLeg for: anAmountToTransfer.
 	
 	^transfer! !
