@@ -48,6 +48,42 @@ test03
 
 	! !
 
+!AccountSummaryTest methodsFor: 'tests' stamp: 'AS 12/1/2021 13:55:17'!
+test04
+
+	| originAccount destinationAccount summary |
+	
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	
+	Transfer amount: 10 * peso from: originAccount to: destinationAccount.
+	
+	summary  := originAccount summary.
+		
+	self assert: 'Salida por transferencia de 10 pesos' equals: (summary at: 1).
+	self assert: 'Balance = -10 pesos' equals: (summary at: 2).
+	
+
+	! !
+
+!AccountSummaryTest methodsFor: 'tests' stamp: 'AS 12/1/2021 14:03:22'!
+test05
+
+	| originAccount destinationAccount summary |
+	
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	
+	Transfer amount: 30 * peso from: originAccount to: destinationAccount.
+	
+	summary  := destinationAccount summary.
+		
+	self assert: 'Entrada por transferencia de 30 pesos' equals: (summary at: 1).
+	self assert: 'Balance = 30 pesos' equals: (summary at: 2).
+	
+
+	! !
+
 
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros2-Ejercicio'!
 TestCase subclass: #PortfolioTest
@@ -647,11 +683,11 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:24:46'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'AS 12/1/2021 14:01:45'!
 balance
 
 	^transactions 
-		inject: 0
+		inject: 0 * peso
 		into: [ :currentBalance :transaction | transaction affectBalance: currentBalance ]! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/21/2019 18:55:56'!
@@ -689,7 +725,7 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'AG 11/29/2021 22:12:26'!
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'AS 12/1/2021 14:04:09'!
 summary
 
 	| finalSummary allTransactions |
@@ -705,6 +741,12 @@ summary
 			].
 		(aTransaction isKindOf: Withdraw) ifTrue: [
 			finalSummary add: ('Extracción por ', (aTransaction value) asString).
+			].
+		(aTransaction isKindOf: TransferWithdrawLeg) ifTrue: [
+			finalSummary add: ('Salida por transferencia de ', (aTransaction value) asString).
+			].
+		(aTransaction isKindOf: TransferDepositLeg) ifTrue: [
+			finalSummary add: ('Entrada por transferencia de ', (aTransaction value) asString).
 			].
 		].
 	
