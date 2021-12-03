@@ -1,3 +1,50 @@
+!classDefinition: #TransferNetTest category: 'ServiciosFinancieros2-Ejercicio'!
+TestCaseTest subclass: #TransferNetTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2-Ejercicio'!
+
+!TransferNetTest methodsFor: 'tests' stamp: 'AG 12/2/2021 02:17:58'!
+test01
+
+	| account net |
+	account := ReceptiveAccount new.
+	
+	net := account transferNet.
+	
+	self assert: '0 pesos' equals: net.
+	! !
+
+!TransferNetTest methodsFor: 'tests' stamp: 'AG 12/2/2021 02:33:52'!
+test02
+
+	| originAccount destinationAccount net |
+	
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	
+	Transfer amount: 10 * peso from: originAccount to: destinationAccount.
+	net := originAccount transferNet.
+	
+	self assert: '-10 pesos' equals: net.
+	! !
+
+!TransferNetTest methodsFor: 'tests' stamp: 'AG 12/2/2021 02:34:11'!
+test03
+
+	| originAccount destinationAccount net |
+	
+	originAccount := ReceptiveAccount new.
+	destinationAccount := ReceptiveAccount new.
+	
+	Transfer amount: 10 * peso from: originAccount to: destinationAccount.
+	net := destinationAccount transferNet.
+	
+	self assert: '10 pesos' equals: net.
+	! !
+
+
 !classDefinition: #AccountSummaryTest category: 'ServiciosFinancieros2-Ejercicio'!
 TestCase subclass: #AccountSummaryTest
 	instanceVariableNames: ''
@@ -725,46 +772,15 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'AS 12/1/2021 14:04:09'!
+!ReceptiveAccount methodsFor: 'method objects' stamp: 'AG 12/2/2021 20:38:36'!
 summary
 
-	| finalSummary allTransactions |
-	finalSummary := OrderedCollection new.
-	allTransactions := self transactions.
-	
-	allTransactions ifEmpty: [finalSummary add: 'Balance = 0 pesos'.
-		^finalSummary].
-	
-	allTransactions do: [:aTransaction | 
-		(aTransaction isKindOf: Deposit) ifTrue: [
-			finalSummary add: ('Depósito por ', (aTransaction value) asString).
-			].
-		(aTransaction isKindOf: Withdraw) ifTrue: [
-			finalSummary add: ('Extracción por ', (aTransaction value) asString).
-			].
-		(aTransaction isKindOf: TransferWithdrawLeg) ifTrue: [
-			finalSummary add: ('Salida por transferencia de ', (aTransaction value) asString).
-			].
-		(aTransaction isKindOf: TransferDepositLeg) ifTrue: [
-			finalSummary add: ('Entrada por transferencia de ', (aTransaction value) asString).
-			].
-		].
-	
-	finalSummary add: ('Balance = ', (self balance) asString).
-	^finalSummary ! !
+	^(Summary of: self) compute! !
 
-
-!classDefinition: #AccountSummary category: 'ServiciosFinancieros2-Ejercicio'!
-Object subclass: #AccountSummary
-	instanceVariableNames: 'summary'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros2-Ejercicio'!
+!ReceptiveAccount methodsFor: 'method objects' stamp: 'AG 12/2/2021 21:12:07'!
+transferNet
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'AG 11/29/2021 21:48:16'!
-initialize
-
-	summary := OrderedCollection new! !
+	^(TransferNet of: self) compute! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros2-Ejercicio'!
@@ -809,6 +825,13 @@ value
 affectBalance: aBalance
 
 	^aBalance + value ! !
+
+
+!Deposit methodsFor: 'method object' stamp: 'AG 12/2/2021 20:55:43'!
+addDescriptionTo: aSummary
+
+	aSummary addDescriptionOfDeposit: self value
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -886,6 +909,17 @@ affectBalance: aBalance
 
 	^aBalance + self value! !
 
+
+!TransferDepositLeg methodsFor: 'method object' stamp: 'AG 12/2/2021 20:51:25'!
+addDescriptionTo: aSummary
+	
+	aSummary addDescriptionOfTransferDeposit: self value! !
+
+!TransferDepositLeg methodsFor: 'method object' stamp: 'AG 12/2/2021 21:15:45'!
+affectTotalNet: totalNet
+
+	totalNet addValueOfTransferDeposit: self value.! !
+
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros2-Ejercicio'!
 TransferLeg subclass: #TransferWithdrawLeg
@@ -904,6 +938,18 @@ depositLeg
 affectBalance: aBalance
 
 	^aBalance - self value! !
+
+
+!TransferWithdrawLeg methodsFor: 'method object' stamp: 'AG 12/2/2021 20:55:53'!
+addDescriptionTo: aSummary
+	
+	aSummary addDescriptionOfTransferWithdraw: self value
+! !
+
+!TransferWithdrawLeg methodsFor: 'method object' stamp: 'AG 12/2/2021 21:16:20'!
+affectTotalNet: totalNet
+
+	totalNet substractValueOfTransferWithdraw: self value.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros2-Ejercicio'!
@@ -930,6 +976,13 @@ affectBalance: aBalance
 
 	^aBalance - value! !
 
+
+!Withdraw methodsFor: 'method object' stamp: 'AG 12/2/2021 20:56:00'!
+addDescriptionTo: aSummary
+	
+	aSummary addDescriptionOfWithdraw: self value
+! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Withdraw class' category: 'ServiciosFinancieros2-Ejercicio'!
@@ -951,6 +1004,62 @@ register: aValue on: account
 	account register: transaction.
 		
 	^ transaction! !
+
+
+!classDefinition: #Summary category: 'ServiciosFinancieros2-Ejercicio'!
+Object subclass: #Summary
+	instanceVariableNames: 'account finalSummary transactions'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2-Ejercicio'!
+
+!Summary methodsFor: 'initialization' stamp: 'AG 12/2/2021 21:09:22'!
+initializeWith: anAccount
+	
+	account := anAccount .
+	finalSummary := OrderedCollection new.
+	transactions := anAccount transactions.! !
+
+
+!Summary methodsFor: 'main protocol' stamp: 'AG 12/2/2021 20:57:35'!
+compute
+	
+	transactions do: [:aTransaction | (aTransaction addDescriptionTo: self)].
+	
+	finalSummary add: ('Balance = ', (account balance) asString).
+	^finalSummary! !
+
+
+!Summary methodsFor: 'adding' stamp: 'AG 12/2/2021 20:53:24'!
+addDescriptionOfDeposit: aValue
+
+	finalSummary add: ('Depósito por ', aValue asString).! !
+
+!Summary methodsFor: 'adding' stamp: 'AG 12/2/2021 20:55:21'!
+addDescriptionOfTransferDeposit: aValue
+
+	finalSummary add: ('Entrada por transferencia de ', aValue asString).! !
+
+!Summary methodsFor: 'adding' stamp: 'AG 12/2/2021 20:55:35'!
+addDescriptionOfTransferWithdraw: aValue
+
+	finalSummary add: ('Salida por transferencia de ', aValue asString).! !
+
+!Summary methodsFor: 'adding' stamp: 'AG 12/2/2021 20:54:59'!
+addDescriptionOfWithdraw: aValue
+
+	finalSummary add: ('Extracción por ', aValue asString).! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Summary class' category: 'ServiciosFinancieros2-Ejercicio'!
+Summary class
+	instanceVariableNames: ''!
+
+!Summary class methodsFor: 'as yet unclassified' stamp: 'AG 12/2/2021 20:40:08'!
+of: anAccount
+	
+	^self new initializeWith: anAccount! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros2-Ejercicio'!
@@ -1044,3 +1153,50 @@ amount: anAmountOfMoney from: originAccount to: destinationAccount
 	
 	
 	! !
+
+
+!classDefinition: #TransferNet category: 'ServiciosFinancieros2-Ejercicio'!
+Object subclass: #TransferNet
+	instanceVariableNames: 'account transactions net'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2-Ejercicio'!
+
+!TransferNet methodsFor: 'initialization' stamp: 'AG 12/2/2021 21:09:13'!
+initializeWith: anAccount
+
+	account := anAccount.
+	transactions := anAccount transactions.
+	net := 0*peso.! !
+
+
+!TransferNet methodsFor: 'operations' stamp: 'AG 12/2/2021 21:17:41'!
+addValueOfTransferDeposit: aValue
+
+	net := net + aValue.! !
+
+!TransferNet methodsFor: 'operations' stamp: 'AG 12/2/2021 21:18:06'!
+substractValueOfTransferWithdraw: aValue
+
+	net := net - aValue.! !
+
+
+!TransferNet methodsFor: 'main protocol' stamp: 'AG 12/2/2021 21:19:03'!
+compute
+	
+	transactions do: [:aTransaction | 
+		aTransaction affectTotalNet: self 
+	].
+	
+	^(net asString).! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferNet class' category: 'ServiciosFinancieros2-Ejercicio'!
+TransferNet class
+	instanceVariableNames: ''!
+
+!TransferNet class methodsFor: 'as yet unclassified' stamp: 'AG 12/2/2021 21:11:10'!
+of: anAccount
+
+	^self new initializeWith: anAccount! !
