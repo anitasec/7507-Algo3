@@ -776,7 +776,6 @@ isComposedBy: anAccount
 
 	^self = anAccount ! !
 
-
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros2-Ejercicio'!
 Object subclass: #AccountTransaction
@@ -993,17 +992,16 @@ register: aValue on: account
 
 !classDefinition: #Summary category: 'ServiciosFinancieros2-Ejercicio'!
 Object subclass: #Summary
-	instanceVariableNames: 'account finalSummary transactions'
+	instanceVariableNames: 'account finalSummary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2-Ejercicio'!
 
-!Summary methodsFor: 'initialization' stamp: 'AG 12/2/2021 21:09:22'!
+!Summary methodsFor: 'initialization' stamp: 'AG 12/5/2021 18:39:17'!
 initializeWith: anAccount
 	
 	account := anAccount .
-	finalSummary := OrderedCollection new.
-	transactions := anAccount transactions.! !
+	finalSummary := OrderedCollection new.! !
 
 
 !Summary methodsFor: 'main protocol' stamp: 'AS 12/5/2021 17:50:09'!
@@ -1142,16 +1140,15 @@ amount: anAmountOfMoney from: originAccount to: destinationAccount
 
 !classDefinition: #TransferNet category: 'ServiciosFinancieros2-Ejercicio'!
 Object subclass: #TransferNet
-	instanceVariableNames: 'account transactions net'
+	instanceVariableNames: 'account net'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2-Ejercicio'!
 
-!TransferNet methodsFor: 'initialization' stamp: 'AG 12/2/2021 21:09:13'!
+!TransferNet methodsFor: 'initialization' stamp: 'AG 12/5/2021 18:39:27'!
 initializeWith: anAccount
 
 	account := anAccount.
-	transactions := anAccount transactions.
 	net := 0*peso.! !
 
 
@@ -1166,12 +1163,10 @@ visitTransferWithdraw: aValue
 	net := net - aValue.! !
 
 
-!TransferNet methodsFor: 'main protocol' stamp: 'AS 12/5/2021 18:06:39'!
+!TransferNet methodsFor: 'main protocol' stamp: 'AG 12/5/2021 18:41:21'!
 compute
 	
-	account do: [:aTransaction | 
-		aTransaction accept: self 
-	].
+	account do: [:aTransaction | aTransaction accept: self ].
 	
 	^(net asString).! !
 
