@@ -5,19 +5,19 @@ TestCaseTest subclass: #TransferNetTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2-Ejercicio'!
 
-!TransferNetTest methodsFor: 'tests' stamp: 'AG 12/2/2021 02:17:58'!
-test01
+!TransferNetTest methodsFor: 'tests' stamp: 'AS 12/5/2021 18:01:52'!
+test01TransferNetOfEmptyAccountShouldPrint0PesosMessage
 
 	| account net |
 	account := ReceptiveAccount new.
 	
-	net := account transferNet.
+	net := TransferNet of: account.
 	
 	self assert: '0 pesos' equals: net.
 	! !
 
-!TransferNetTest methodsFor: 'tests' stamp: 'AG 12/2/2021 02:33:52'!
-test02
+!TransferNetTest methodsFor: 'tests' stamp: 'AS 12/5/2021 18:03:19'!
+test02TransferNetOfAccountWithTransferWithdrawShouldPrintNegativePesosMessage
 
 	| originAccount destinationAccount net |
 	
@@ -25,13 +25,13 @@ test02
 	destinationAccount := ReceptiveAccount new.
 	
 	Transfer amount: 10 * peso from: originAccount to: destinationAccount.
-	net := originAccount transferNet.
+	net := TransferNet of: originAccount.
 	
 	self assert: '-10 pesos' equals: net.
 	! !
 
-!TransferNetTest methodsFor: 'tests' stamp: 'AG 12/2/2021 02:34:11'!
-test03
+!TransferNetTest methodsFor: 'tests' stamp: 'AS 12/5/2021 18:03:50'!
+test03TransferNetOfAccountWithTransferDepositShouldPrintPositivePesosMessage
 
 	| originAccount destinationAccount net |
 	
@@ -39,7 +39,7 @@ test03
 	destinationAccount := ReceptiveAccount new.
 	
 	Transfer amount: 10 * peso from: originAccount to: destinationAccount.
-	net := destinationAccount transferNet.
+	net := TransferNet of: destinationAccount.
 	
 	self assert: '10 pesos' equals: net.
 	! !
@@ -52,51 +52,49 @@ TestCase subclass: #AccountSummaryTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2-Ejercicio'!
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'AG 11/29/2021 21:54:31'!
-test01
+!AccountSummaryTest methodsFor: 'tests' stamp: 'AS 12/5/2021 17:55:36'!
+test01SummaryOfNewAccountWithoutTransactionsShouldPrintBalanceMessageForZeroPesos
 
 	| account summary |
 	account := ReceptiveAccount new.
 	
-	summary := account summary.
-	
+	summary := (Summary of: account).
+
 	self assert: 'Balance = 0 pesos' equals: summary first.
 	
 			! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'AG 11/29/2021 22:05:53'!
-test02
+!AccountSummaryTest methodsFor: 'tests' stamp: 'AS 12/5/2021 17:56:40'!
+test02SummaryOfAccountWith100PesoDepositShouldPrintDepositMessageAndBalanceMessageOf100Peso
 
 	| account summary |
 	
 	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account.
 	
-	summary  := account summary.
+	summary  := Summary of: account.
 		
 	self assert: 'Depósito por 100 pesos' equals: (summary at: 1).
 	self assert: 'Balance = 100 pesos' equals: (summary at: 2).
 	! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'AG 11/29/2021 22:12:41'!
-test03
+!AccountSummaryTest methodsFor: 'tests' stamp: 'AS 12/5/2021 17:59:20'!
+test03SummaryOfAccountWithWithdrawShouldPrintExtractionMessage
 
 	| account summary |
 	
 	account := ReceptiveAccount new.
-	Deposit register: 100 * peso on: account.
 	Withdraw register: 50 * peso on: account.
 	
-	summary  := account summary.
+	summary  := Summary of: account.
 		
-	self assert: 'Depósito por 100 pesos' equals: (summary at: 1).
-	self assert: 'Extracción por 50 pesos' equals: (summary at: 2).
-	self assert: 'Balance = 50 pesos' equals: (summary at: 3).
+	self assert: 'Extracción por 50 pesos' equals: (summary at: 1).
+	self assert: 'Balance = -50 pesos' equals: (summary at: 2).
 
 	! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'AS 12/1/2021 13:55:17'!
-test04
+!AccountSummaryTest methodsFor: 'tests' stamp: 'AS 12/5/2021 17:59:55'!
+test04SummaryOfAccountWithTransferShouldPrintTranferWithdrawMessage
 
 	| originAccount destinationAccount summary |
 	
@@ -105,7 +103,7 @@ test04
 	
 	Transfer amount: 10 * peso from: originAccount to: destinationAccount.
 	
-	summary  := originAccount summary.
+	summary  := Summary of: originAccount.
 		
 	self assert: 'Salida por transferencia de 10 pesos' equals: (summary at: 1).
 	self assert: 'Balance = -10 pesos' equals: (summary at: 2).
@@ -113,8 +111,8 @@ test04
 
 	! !
 
-!AccountSummaryTest methodsFor: 'tests' stamp: 'AS 12/1/2021 14:03:22'!
-test05
+!AccountSummaryTest methodsFor: 'tests' stamp: 'AS 12/5/2021 18:00:42'!
+test05SummaryOfAccountWithTransferShouldPrintTransferDepositMessage
 
 	| originAccount destinationAccount summary |
 	
@@ -123,7 +121,7 @@ test05
 	
 	Transfer amount: 30 * peso from: originAccount to: destinationAccount.
 	
-	summary  := destinationAccount summary.
+	summary  := Summary of: destinationAccount.
 		
 	self assert: 'Entrada por transferencia de 30 pesos' equals: (summary at: 1).
 	self assert: 'Balance = 30 pesos' equals: (summary at: 2).
@@ -443,7 +441,7 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2-Ejercicio'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:07:03'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:07:03'!
 test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAccount
 
 	| destinationAccount originAccount |
@@ -459,7 +457,7 @@ test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAcco
 	self assert: 8 * peso equals: originAccount balance.
 	self assert: 12 * peso equals: destinationAccount balance.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:12:28'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:12:28'!
 test02ATransferKnowsItsValue
 
 	| destinationAccount originAccount transfer |
@@ -474,7 +472,7 @@ test02ATransferKnowsItsValue
 	
 	self assert: 2 * peso equals: transfer value.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:44'!
 test03DepositLegKnowsItsWithdrawCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -489,7 +487,7 @@ test03DepositLegKnowsItsWithdrawCounterpart
 	
 	self assert: transfer withdrawLeg equals: transfer depositLeg withdrawLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:51'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:51'!
 test04WithdrawLegKnowsItsDepositCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -504,7 +502,7 @@ test04WithdrawLegKnowsItsDepositCounterpart
 	
 	self assert: transfer depositLeg equals: transfer withdrawLeg depositLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:36'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:36'!
 test05OriginAndDestinationAccountsCannotBeTheSame
 
 	| originAccount |
@@ -520,7 +518,7 @@ test05OriginAndDestinationAccountsCannotBeTheSame
 		]
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:44'!
 test06CannotTransferAZeroAmount
 
 	| originAccount destinationAccount |
@@ -578,6 +576,12 @@ isComposedBy: anAccount
 addTransactionsTo: aCollectionOfTransactions
 
 	self subclassResponsibility ! !
+
+!Account methodsFor: 'private' stamp: 'AS 12/5/2021 17:49:54'!
+do: aBlock
+	
+	self transactions do: aBlock.
+	! !
 
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros2-Ejercicio'!
@@ -695,25 +699,26 @@ signalCanNotAddAccount
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:48:55'!
-canNotAddAccountErrorMessage
-	
-	^'Can not add repeated account to a portfolio'! !
-
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:18:21'!
+!Portfolio class methodsFor: 'initialization' stamp: 'HAW 5/25/2019 11:18:21'!
 with: anAccount
 
 	^self new 
 		add: anAccount;
 		yourself! !
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:23:59'!
+!Portfolio class methodsFor: 'initialization' stamp: 'HAW 5/25/2019 11:23:59'!
 with: anAccount with: anotherAccount
 
 	^self new 
 		add: anAccount;
 		add: anotherAccount;
 		yourself! !
+
+
+!Portfolio class methodsFor: 'error messages' stamp: 'HAW 5/25/2019 11:48:55'!
+canNotAddAccountErrorMessage
+	
+	^'Can not add repeated account to a portfolio'! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros2-Ejercicio'!
@@ -771,17 +776,6 @@ isComposedBy: anAccount
 
 	^self = anAccount ! !
 
-
-!ReceptiveAccount methodsFor: 'method objects' stamp: 'AG 12/2/2021 20:38:36'!
-summary
-
-	^(Summary of: self) compute! !
-
-!ReceptiveAccount methodsFor: 'method objects' stamp: 'AG 12/2/2021 21:12:07'!
-transferNet
-
-	^(TransferNet of: self) compute! !
-
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros2-Ejercicio'!
 Object subclass: #AccountTransaction
@@ -827,10 +821,10 @@ affectBalance: aBalance
 	^aBalance + value ! !
 
 
-!Deposit methodsFor: 'method object' stamp: 'AG 12/2/2021 20:55:43'!
-addDescriptionTo: aSummary
+!Deposit methodsFor: 'method object' stamp: 'AS 12/5/2021 17:32:20'!
+accept: anExpressionVisitor
 
-	aSummary addDescriptionOfDeposit: self value
+	anExpressionVisitor visitDeposit: self value
 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -845,7 +839,7 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
-!Deposit class methodsFor: 'as yet unclassified' stamp: 'LL 7/8/2021 21:45:00'!
+!Deposit class methodsFor: 'registration' stamp: 'LL 7/8/2021 21:45:00'!
 register: aValue on: account
 
 	| transaction |
@@ -880,7 +874,7 @@ initializeWith: aTransfer
 TransferLeg class
 	instanceVariableNames: ''!
 
-!TransferLeg class methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 22:45:01'!
+!TransferLeg class methodsFor: 'initialization' stamp: 'LL 9/20/2020 22:45:01'!
 of: aTransfer on: anAccount
 
 	| transaction |
@@ -910,15 +904,10 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'method object' stamp: 'AG 12/2/2021 20:51:25'!
-addDescriptionTo: aSummary
-	
-	aSummary addDescriptionOfTransferDeposit: self value! !
+!TransferDepositLeg methodsFor: 'method object' stamp: 'AS 12/5/2021 17:25:18'!
+accept: anExpressionVisitor
 
-!TransferDepositLeg methodsFor: 'method object' stamp: 'AG 12/2/2021 21:15:45'!
-affectTotalNet: totalNet
-
-	totalNet addValueOfTransferDeposit: self value.! !
+	anExpressionVisitor visitTransferDeposit: self value.! !
 
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros2-Ejercicio'!
@@ -940,16 +929,11 @@ affectBalance: aBalance
 	^aBalance - self value! !
 
 
-!TransferWithdrawLeg methodsFor: 'method object' stamp: 'AG 12/2/2021 20:55:53'!
-addDescriptionTo: aSummary
-	
-	aSummary addDescriptionOfTransferWithdraw: self value
+!TransferWithdrawLeg methodsFor: 'method object' stamp: 'AS 12/5/2021 17:25:53'!
+accept: anExpressionVisitor
+
+	anExpressionVisitor visitTransferWithdraw: self value.
 ! !
-
-!TransferWithdrawLeg methodsFor: 'method object' stamp: 'AG 12/2/2021 21:16:20'!
-affectTotalNet: totalNet
-
-	totalNet substractValueOfTransferWithdraw: self value.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros2-Ejercicio'!
@@ -977,10 +961,10 @@ affectBalance: aBalance
 	^aBalance - value! !
 
 
-!Withdraw methodsFor: 'method object' stamp: 'AG 12/2/2021 20:56:00'!
-addDescriptionTo: aSummary
+!Withdraw methodsFor: 'method object' stamp: 'AS 12/5/2021 17:32:59'!
+accept: anExpressionVisitor
 	
-	aSummary addDescriptionOfWithdraw: self value
+	anExpressionVisitor visitWithdraw: self value
 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -995,7 +979,7 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
-!Withdraw class methodsFor: 'as yet unclassified' stamp: 'LL 7/8/2021 21:45:05'!
+!Withdraw class methodsFor: 'registration' stamp: 'LL 7/8/2021 21:45:05'!
 register: aValue on: account
 
 	| transaction |
@@ -1008,45 +992,44 @@ register: aValue on: account
 
 !classDefinition: #Summary category: 'ServiciosFinancieros2-Ejercicio'!
 Object subclass: #Summary
-	instanceVariableNames: 'account finalSummary transactions'
+	instanceVariableNames: 'account finalSummary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2-Ejercicio'!
 
-!Summary methodsFor: 'initialization' stamp: 'AG 12/2/2021 21:09:22'!
+!Summary methodsFor: 'initialization' stamp: 'AG 12/5/2021 18:39:17'!
 initializeWith: anAccount
 	
 	account := anAccount .
-	finalSummary := OrderedCollection new.
-	transactions := anAccount transactions.! !
+	finalSummary := OrderedCollection new.! !
 
 
-!Summary methodsFor: 'main protocol' stamp: 'AG 12/2/2021 20:57:35'!
+!Summary methodsFor: 'main protocol' stamp: 'AS 12/5/2021 17:50:09'!
 compute
 	
-	transactions do: [:aTransaction | (aTransaction addDescriptionTo: self)].
+	account do: [:aTransaction | (aTransaction accept: self)].
 	
 	finalSummary add: ('Balance = ', (account balance) asString).
 	^finalSummary! !
 
 
-!Summary methodsFor: 'adding' stamp: 'AG 12/2/2021 20:53:24'!
-addDescriptionOfDeposit: aValue
+!Summary methodsFor: 'adding' stamp: 'AS 12/5/2021 17:32:20'!
+visitDeposit: aValue
 
 	finalSummary add: ('Depósito por ', aValue asString).! !
 
-!Summary methodsFor: 'adding' stamp: 'AG 12/2/2021 20:55:21'!
-addDescriptionOfTransferDeposit: aValue
+!Summary methodsFor: 'adding' stamp: 'AS 12/5/2021 17:36:24'!
+visitTransferDeposit: aValue
 
 	finalSummary add: ('Entrada por transferencia de ', aValue asString).! !
 
-!Summary methodsFor: 'adding' stamp: 'AG 12/2/2021 20:55:35'!
-addDescriptionOfTransferWithdraw: aValue
+!Summary methodsFor: 'adding' stamp: 'AS 12/5/2021 17:37:58'!
+visitTransferWithdraw: aValue
 
 	finalSummary add: ('Salida por transferencia de ', aValue asString).! !
 
-!Summary methodsFor: 'adding' stamp: 'AG 12/2/2021 20:54:59'!
-addDescriptionOfWithdraw: aValue
+!Summary methodsFor: 'adding' stamp: 'AS 12/5/2021 17:32:59'!
+visitWithdraw: aValue
 
 	finalSummary add: ('Extracción por ', aValue asString).! !
 
@@ -1056,10 +1039,10 @@ addDescriptionOfWithdraw: aValue
 Summary class
 	instanceVariableNames: ''!
 
-!Summary class methodsFor: 'as yet unclassified' stamp: 'AG 12/2/2021 20:40:08'!
+!Summary class methodsFor: 'initialization' stamp: 'AS 12/5/2021 17:11:14'!
 of: anAccount
 	
-	^self new initializeWith: anAccount! !
+	^(self new initializeWith: anAccount) compute! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros2-Ejercicio'!
@@ -1157,36 +1140,33 @@ amount: anAmountOfMoney from: originAccount to: destinationAccount
 
 !classDefinition: #TransferNet category: 'ServiciosFinancieros2-Ejercicio'!
 Object subclass: #TransferNet
-	instanceVariableNames: 'account transactions net'
+	instanceVariableNames: 'account net'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2-Ejercicio'!
 
-!TransferNet methodsFor: 'initialization' stamp: 'AG 12/2/2021 21:09:13'!
+!TransferNet methodsFor: 'initialization' stamp: 'AG 12/5/2021 18:39:27'!
 initializeWith: anAccount
 
 	account := anAccount.
-	transactions := anAccount transactions.
 	net := 0*peso.! !
 
 
-!TransferNet methodsFor: 'operations' stamp: 'AG 12/2/2021 21:17:41'!
-addValueOfTransferDeposit: aValue
+!TransferNet methodsFor: 'operations' stamp: 'AS 12/5/2021 17:26:44'!
+visitTransferDeposit: aValue
 
 	net := net + aValue.! !
 
-!TransferNet methodsFor: 'operations' stamp: 'AG 12/2/2021 21:18:06'!
-substractValueOfTransferWithdraw: aValue
+!TransferNet methodsFor: 'operations' stamp: 'AS 12/5/2021 17:27:10'!
+visitTransferWithdraw: aValue
 
 	net := net - aValue.! !
 
 
-!TransferNet methodsFor: 'main protocol' stamp: 'AG 12/2/2021 21:19:03'!
+!TransferNet methodsFor: 'main protocol' stamp: 'AG 12/5/2021 18:41:21'!
 compute
 	
-	transactions do: [:aTransaction | 
-		aTransaction affectTotalNet: self 
-	].
+	account do: [:aTransaction | aTransaction accept: self ].
 	
 	^(net asString).! !
 
@@ -1196,7 +1176,7 @@ compute
 TransferNet class
 	instanceVariableNames: ''!
 
-!TransferNet class methodsFor: 'as yet unclassified' stamp: 'AG 12/2/2021 21:11:10'!
+!TransferNet class methodsFor: 'initialization' stamp: 'AS 12/5/2021 17:13:26'!
 of: anAccount
 
-	^self new initializeWith: anAccount! !
+	^(self new initializeWith: anAccount) compute.! !
